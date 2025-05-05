@@ -1,10 +1,38 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4">Welcome to Developer Workbook</h1>
+        <p class="lead">Your ultimate tool for onboarding into new teams and companies.</p>
+        <a asp-page="/Auth/Register" class="btn btn-primary btn-lg me-2">Get Started</a>
+        <a asp-page="/About" class="btn btn-outline-secondary btn-lg">Learn More</a>
+    </div>
+
+    <div class="row text-center">
+        <div class="col-md-4 mb-4">
+            <i class="fas fa-book fa-3x text-primary mb-3"></i>
+            <h3>Structured Learning</h3>
+            <p>Track your personal growth and learning journey with structured sections for reflection and note-taking.</p>
+        </div>
+        <div class="col-md-4 mb-4">
+            <i class="fas fa-save fa-3x text-success mb-3"></i>
+            <h3>Autosaving</h3>
+            <p>Never lose your progress with our autosaving feature, ensuring your data is always safe.</p>
+        </div>
+        <div class="col-md-4 mb-4">
+            <i class="fas fa-lock fa-3x text-warning mb-3"></i>
+            <h3>Secure Login</h3>
+            <p>Enjoy a secure and seamless login experience with cookie-based authentication.</p>
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <h2>Why Choose Developer Workbook?</h2>
+        <p>We provide a guided onboarding experience to help you integrate into your new team and company effortlessly.</p>
+    </div>
 </div>
+

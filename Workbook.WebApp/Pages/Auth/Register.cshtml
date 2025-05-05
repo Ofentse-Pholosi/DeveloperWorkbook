@@ -6,40 +6,61 @@
     Layout = "~/Pages/Shared/_Layout.cshtml";
 }
 
-<h2>New Developer Workbook Registration</h2>
-<p>Please enter your developer information as required:</p>
-
-<div class="container border" style="padding:20px">
+<div class="container border rounded p-4 mt-4 shadow-sm">
+    <h2 class="text-center">New Developer Workbook Registration</h2>
+    <p class="text-center">Please enter your developer information as required:</p>
     <form method="post">
-        <div class="form-group row">
-            <label>Full Name:</label><input asp-for="Input.FirstName" required /></div>
-        <div class="form-group row">
-            <label>Last Name:</label><input asp-for="Input.LastName" required /></div>
-        <div class="form-group row">
-            <label>Email:</label><input asp-for="Input.Email" type="email" required /></div>
-        <div class="form-group row">
-            <label>Password:</label><input asp-for="Input.Password" type="password" required /></div>
-        <div class="form-group row">
-            <label>Team Lead Email:</label><input asp-for="Input.TeamLeadEmail" type="email" /></div>
-        <div class="form-group row">
-            <label>Position Name:</label><input asp-for="Input.PositionName" /></div>
-        <div class="form-group row">
-            <label>Team Name:</label><input asp-for="Input.TeamName" /></div>
-        <div class="form-group row">
-            <label>Company Name:</label><input asp-for="Input.CompanyName" /></div>
-        <div class="form-group row">
-            <label>Division Name:</label><input asp-for="Input.DivisionName" /></div>
-        <div class="form-group row">
-            <label>Date Joined Team:</label><input asp-for="Input.DateJoinedTeam" type="date" /></div>
-
-        <br />
-        <button type="submit">Register</button>
-        <br /><br />
-        <p>Already have an account? <a asp-page="/Auth/Login">Login here</a>.</p>
-
+        <div class="mb-3">
+            <label for="firstName" class="form-label">Full Name:</label>
+            <input asp-for="Input.FirstName" class="form-control" id="firstName" placeholder="Enter your full name" required />
+        </div>
+        <div class="mb-3">
+            <label for="lastName" class="form-label">Last Name:</label>
+            <input asp-for="Input.LastName" class="form-control" id="lastName" placeholder="Enter your last name" required />
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email:</label>
+            <input asp-for="Input.Email" class="form-control" id="email" type="email" placeholder="Enter your email" required />
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password:</label>
+            <input asp-for="Input.Password" class="form-control" id="password" type="password" placeholder="Enter your password" required />
+        </div>
+        <div class="mb-3">
+            <label for="teamLeadEmail" class="form-label">Team Lead Email:</label>
+            <input asp-for="Input.TeamLeadEmail" class="form-control" id="teamLeadEmail" type="email" placeholder="Enter your team lead's email" />
+        </div>
+        <div class="mb-3">
+            <label for="positionName" class="form-label">Position Name:</label>
+            <input asp-for="Input.PositionName" class="form-control" id="positionName" placeholder="Enter your position name" />
+        </div>
+        <div class="mb-3">
+            <label for="teamName" class="form-label">Team Name:</label>
+            <input asp-for="Input.TeamName" class="form-control" id="teamName" placeholder="Enter your team name" />
+        </div>
+        <div class="mb-3">
+            <label for="companyName" class="form-label">Company Name:</label>
+            <input asp-for="Input.CompanyName" class="form-control" id="companyName" placeholder="Enter your company name" />
+        </div>
+        <div class="mb-3">
+            <label for="divisionName" class="form-label">Division Name:</label>
+            <input asp-for="Input.DivisionName" class="form-control" id="divisionName" placeholder="Enter your division name" />
+        </div>
+        <div class="mb-3">
+            <label for="dateJoinedTeam" class="form-label">Date Joined Team:</label>
+            <input asp-for="Input.DateJoinedTeam" class="form-control" id="dateJoinedTeam" type="date" />
+        </div>
         @if (!string.IsNullOrEmpty(Model.ErrorMessage))
         {
-            <p style="color:red">@Model.ErrorMessage</p>
+            <div class="alert alert-danger" role="alert">
+                @Model.ErrorMessage
+            </div>
         }
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary">Register</button>
+        </div>
+        <div class="text-center mt-3">
+            <p>Already have an account? <a asp-page="/Auth/Login">Login here</a>.</p>
+        </div>
     </form>
 </div>
