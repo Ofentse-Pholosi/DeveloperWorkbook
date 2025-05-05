@@ -1,0 +1,45 @@
+﻿@page
+@model Workbook.WebApp.Pages.Auth.RegisterModel
+@{
+}
+@{
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h2>New Developer Workbook Registration</h2>
+<p>Please enter your developer information as required:</p>
+
+<div class="container border" style="padding:20px">
+    <form method="post">
+        <div class="form-group row">
+            <label>Full Name:</label><input asp-for="Input.FirstName" required /></div>
+        <div class="form-group row">
+            <label>Last Name:</label><input asp-for="Input.LastName" required /></div>
+        <div class="form-group row">
+            <label>Email:</label><input asp-for="Input.Email" type="email" required /></div>
+        <div class="form-group row">
+            <label>Password:</label><input asp-for="Input.Password" type="password" required /></div>
+        <div class="form-group row">
+            <label>Team Lead Email:</label><input asp-for="Input.TeamLeadEmail" type="email" /></div>
+        <div class="form-group row">
+            <label>Position Name:</label><input asp-for="Input.PositionName" /></div>
+        <div class="form-group row">
+            <label>Team Name:</label><input asp-for="Input.TeamName" /></div>
+        <div class="form-group row">
+            <label>Company Name:</label><input asp-for="Input.CompanyName" /></div>
+        <div class="form-group row">
+            <label>Division Name:</label><input asp-for="Input.DivisionName" /></div>
+        <div class="form-group row">
+            <label>Date Joined Team:</label><input asp-for="Input.DateJoinedTeam" type="date" /></div>
+
+        <br />
+        <button type="submit">Register</button>
+        <br /><br />
+        <p>Already have an account? <a asp-page="/Auth/Login">Login here</a>.</p>
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <p style="color:red">@Model.ErrorMessage</p>
+        }
+    </form>
+</div>
