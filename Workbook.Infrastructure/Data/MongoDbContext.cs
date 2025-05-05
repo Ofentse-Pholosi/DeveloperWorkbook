@@ -17,5 +17,5 @@ public class MongoDbContext
         _database = client.GetDatabase(_settings.DatabaseName);
     }
 
-    public IMongoCollection<DevUser> Users => _database.GetCollection<DevUser>(_settings.UsersCollection);
+    public IMongoCollection<Users> Users => _database.GetCollection<Users>(_settings.UsersCollection);
 }

@@ -10,7 +10,7 @@ using Workbook.Core.Entities;
 
 namespace Workbook.Application.Users.Commands.RegisterUser;
 
-public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, string>
+public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, RegisterUserResult>
 {
     private readonly IUserRepository _userRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -24,18 +24,25 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, s
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<string> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    public async Task<Core.Entities.RegisterUserResult> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         var existingUser = await _userRepository.GetUserEmailAsync(request.Email);
         if (existingUser != null)
         {
-            throw new Exception("Username already exists.");
+            return new Core.Entities.RegisterUserResult
+            {
+                Success = false,
+                ErrorMessage = "The email address is already in use. Please try again with a unique email address."
+            };
         }
 
-        var user = new DevUser
+        var user = new Core.Entities.Users
         {
             Email = request.Email,
             PasswordHash = HashPassword(request.Password),
+            PasswordHashConfirm = HashPassword(request.PasswordConfirm),
+            FirstName = request.FirstName,
+            LastName = request.LastName,
             TeamLeadEmail = request.TeamLeadEmail,
             DevPosition = request.DevPosition,
             TeamName = request.TeamName,
@@ -49,7 +56,8 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, s
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email)
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}")
         };
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -65,7 +73,11 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, s
             }
         );
 
-        return user.Id.ToString();
+        return new Core.Entities.RegisterUserResult
+        {
+            Success = true,
+            UserId = user.Id
+        };
     }
 
     private string HashPassword(string password)

@@ -30,6 +30,7 @@ public class RegisterModel : PageModel
             LastName = Input.LastName,
             Email = Input.Email,
             Password = Input.Password,
+            PasswordConfirm = Input.PasswordConfirm,
             TeamLeadEmail = Input.TeamLeadEmail,
             DevPosition = Input.PositionName,
             TeamName = Input.TeamName,
@@ -40,13 +41,13 @@ public class RegisterModel : PageModel
 
         var result = await _mediator.Send(command);
 
-        if (bool.TryParse(result, out var isSuccess) && isSuccess)
+        if (!result.Success)
         {
-            return RedirectToPage("/Index");
+            ErrorMessage = result.ErrorMessage;
+            return Page();
         }
 
-        ErrorMessage = "Registration failed. Try again.";
-        return Page();
+        return RedirectToPage("/Dashboard");
     }
 
     public class RegisterInput
@@ -61,6 +62,9 @@ public class RegisterModel : PageModel
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; } = "";
+        [Required]
+        [DataType(DataType.Password)]
+        public string PasswordConfirm { get; internal set; } = "";
         [Required]
         [EmailAddress]
         public string TeamLeadEmail { get; set; } = "";

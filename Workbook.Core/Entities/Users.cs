@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Workbook.Core.Entities;
 
-public class DevUser
+public class Users
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

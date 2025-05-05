@@ -3,6 +3,6 @@
 namespace Workbook.Application.Interfaces;
 public interface IAuthService
 {
-    Task<bool> RegisterAsync(DevUser devUser, string password);
-    Task<DevUser?> ValidateUserAsync(string email, string password);
+    Task<bool> RegisterAsync(Core.Entities.Users devUser, string password);
+    Task<Core.Entities.Users?> ValidateUserAsync(string email, string password);
 }

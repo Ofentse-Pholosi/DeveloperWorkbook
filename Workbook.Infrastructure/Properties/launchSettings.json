@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Workbook.Infrastructure": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:26780;http://localhost:26781"
+    }
+  }
+}

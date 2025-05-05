@@ -1,8 +1,9 @@
 ﻿using MediatR;
+using Workbook.Core.Entities;
 
 namespace Workbook.Application.Users.Commands.RegisterUser;
 
-public sealed class RegisterUserCommand : IRequest<string>
+public sealed class RegisterUserCommand : IRequest<RegisterUserResult>
 {
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;

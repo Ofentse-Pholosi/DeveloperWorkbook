@@ -50,12 +50,14 @@
             <label for="dateJoinedTeam" class="form-label">Date Joined Team:</label>
             <input asp-for="Input.DateJoinedTeam" class="form-control" id="dateJoinedTeam" type="date" />
         </div>
+
         @if (!string.IsNullOrEmpty(Model.ErrorMessage))
         {
             <div class="alert alert-danger" role="alert">
                 @Model.ErrorMessage
             </div>
         }
+
         <div class="d-grid">
             <button type="submit" class="btn btn-primary">Register</button>
         </div>

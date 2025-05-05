@@ -14,12 +14,12 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public async Task<DevUser?> GetUserEmailAsync(string email)
+    public async Task<Users?> GetUserEmailAsync(string email)
     {
         return await _context.Users.Find(u => u.Email == email).FirstOrDefaultAsync();
     }
 
-    public async Task CreateAsync(DevUser user)
+    public async Task CreateAsync(Users user)
     {
         await _context.Users.InsertOneAsync(user);
     }

@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Getting Started in the Team",
+    "questions": [
+      "Date:",
+      "Team lead / mentor:",
+      "Project(s) assigned to:",
+      "Main tech stack:",
+      "Key tools used:",
+      "What is the purpose of the main project?",
+      "What are the main architectural patterns used?",
+      "What unfamiliar terms, tools, or libraries have I seen so far?"
+    ]
+  },
+  {
+    "title": "Learning by Doing",
+    "questions": [
+      "What was the first ticket assigned to me?",
+      "Which parts of the codebase did I explore?",
+      "What did I do to understand the code?"
+    ]
+  },
+  {
+    "title": "Skills & Progress Tracker",
+    "questions": [
+      "What were my weekly learning goals?",
+      "What made me feel accomplished this week?",
+      "What made me feel stuck?",
+      "What would I do differently next time?"
+    ]
+  },
+  {
+    "title": "Communication & Team Integration",
+    "questions": [
+      "What good questions did I ask this week?",
+      "Who did I pair with or shadow?",
+      "Did I receive feedback? What was it?"
+    ]
+  },
+  {
+    "title": "Resources & Notes",
+    "questions": [
+      "Any terms or commands I found helpful?",
+      "Personal glossary:",
+      "Cool tricks I learned:"
+    ]
+  },
+  {
+    "title": "Reflecting on Growth",
+    "questions": [
+      "What was hard at first but feels easier now?",
+      "What new things am I confidently doing now?",
+      "How do I want to grow in the next month?"
+    ]
+  }
+]

@@ -3,6 +3,7 @@ using Workbook.Application.Users.Commands.RegisterUser;
 using Workbook.Infrastructure.Data;
 using Workbook.Infrastructure.Services;
 using Workbook.Infrastructure.Settings;
+using Workbook.WebApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,16 +15,17 @@ builder.Services.Configure<MongoDBSettings>(
 builder.Services.AddSingleton<MongoDbContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IWorkbookSectionProvider, WorkbookSectionProvider>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(RegisterUserCommand).Assembly));
-builder.Services.AddAuthentication("WorkbookCookie")
-    .AddCookie("WorkbookCookie", options =>
+builder.Services.AddAuthentication("Cookies")
+    .AddCookie("Cookies", options =>
     {
         options.LoginPath = "/Account/Login";
         options.AccessDeniedPath = "/Account/AccessDenied";
         options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
-        options.Cookie.Name = "WorkbookCookie";
+        options.Cookie.Name = "Cookies";
     });
 
 var app = builder.Build();
