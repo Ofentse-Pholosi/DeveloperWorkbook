@@ -18,4 +18,6 @@ public class MongoDbContext
     }
 
     public IMongoCollection<Users> Users => _database.GetCollection<Users>(_settings.UsersCollection);
+
+    public IMongoCollection<WorkbookAnswer> WorkbookAnswers => _database.GetCollection<WorkbookAnswer>(_settings.WorkbookAnswersCollection);
 }

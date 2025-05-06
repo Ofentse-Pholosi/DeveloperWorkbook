@@ -16,6 +16,7 @@ builder.Services.AddSingleton<MongoDbContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IWorkbookSectionProvider, WorkbookSectionProvider>();
+builder.Services.AddScoped<WorkbookAnswerRepository>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(RegisterUserCommand).Assembly));
@@ -24,9 +25,12 @@ builder.Services.AddAuthentication("Cookies")
     {
         options.LoginPath = "/Auth/Login";
         options.LogoutPath = "/Auth/Logout";
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(1);
-        options.SlidingExpiration = true;
+        options.ExpireTimeSpan = TimeSpan.Zero;
+        options.SlidingExpiration = false;
         options.Cookie.Name = "Cookies";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.SameSite = SameSiteMode.Strict;
     });
 
 var app = builder.Build();
