@@ -30,9 +30,7 @@
                     <ul class="navbar-nav flex-grow-2">
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li>Hello, @User.Identity.Name</li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-page="/Auth/Logout">Logout</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-page="/Dashboard">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-page="/Index">Logout</a></li>
                         }
                         else
                         {
@@ -59,7 +57,7 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container d-flex justify-content-between align-items-center">
+        <div class="container d-flex flex-column justify-content-center align-items-center text-center">
             <div>
                 <a>
                     Let's connect:

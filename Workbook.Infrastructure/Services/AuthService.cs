@@ -37,7 +37,7 @@ public sealed class AuthService : IAuthService
     public async Task<Users?> ValidateUserAsync(string email, string password)
     {
         var user = await _userRepository.GetUserEmailAsync(email);
-        if (user == null || !VerifyPassword(password, user.PasswordHash))
+        if (user != null && !VerifyPassword(password, user.PasswordHash))
         {
             return null; // Invalid credentials
         }

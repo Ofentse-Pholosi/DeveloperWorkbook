@@ -27,7 +27,9 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, bool>
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email)
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.GivenName, user.FirstName),
+            new Claim(ClaimTypes.Surname, user.LastName),
         };
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -38,7 +40,7 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, bool>
             principal,
             new AuthenticationProperties
             {
-                IsPersistent = true,
+                IsPersistent = false,
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10)
             });
 
