@@ -4,6 +4,17 @@ This is a modern ASP.NET Core Web App designed to facilitate a **continuous feed
 
 ---
 
+## Open Source & Customization
+
+This project is fully open source! We encourage the developer community to customize, extend, and adapt Dev Workbook to fit their organization's unique onboarding journey.
+
+To get started with custom development:
+1. **Fork this repository** to your own GitHub account.
+2. Customize the default sections and questions by modifying the JSON configuration in [workbookSections.json](file:///c:/Projects/DeveloperWorkbook/Workbook.WebApp/workbookSections.json).
+3. Push changes and build custom features to adapt the interface to your desire.
+
+---
+
 ## Features
 
 * **Developer Workbook**: A structured reflection workspace broken down into sections (e.g. Getting Started, Learning by Doing, Progress Tracker).
@@ -62,6 +73,35 @@ DeveloperWorkbook
 ├── Workbook.Infrastructure # MongoDB implementations, Authentication services
 └── Workbook.WebApp         # Razor Pages, Web assets (css/js), and View Models
 ```
+
+---
+
+## Infrastructure & Credentials Setup
+
+To run the full onboarding flow successfully (including manager notifications and secure passwordless OTP logins), you need to configure your database and mail credentials. To keep your credentials secure, we recommend using .NET User Secrets during local development instead of putting passwords in `appsettings.json`.
+
+### 1. MongoDB Atlas Setup (Cloud Database)
+1. Sign up or log into [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
+2. Create a free cluster (Shared M0) and name your database (e.g. `DevsWorkbookDb`).
+3. Under **Database Access**, create a user with read/write privileges.
+4. Under **Network Access**, allow access from your local IP address (or `0.0.0.0/0` for any location).
+5. Go to **Database** -> **Connect** -> **Drivers**, select C#/.NET, and copy your connection string (e.g., `mongodb+srv://<username>:<password>@cluster.mongodb.net/`).
+6. In your terminal, initialize user secrets and save the connection string locally:
+   ```bash
+   dotnet user-secrets init --project Workbook.WebApp
+   dotnet user-secrets set "MongoDbSettings:ConnectionString" "YOUR_MONGODB_ATLAS_CONNECTION_STRING" --project Workbook.WebApp
+   ```
+
+### 2. SMTP Mail Server Setup (Notifications & OTP)
+To send OTP verification codes and manager alerts, configure an SMTP server (such as Mailtrap for testing, or SendGrid, Gmail App Passwords, etc. for production):
+1. Retrieve your SMTP host, port, username, and password credentials.
+2. Save these credentials in your local user secrets:
+   ```bash
+   dotnet user-secrets set "SmtpSettings:Username" "YOUR_SMTP_USERNAME" --project Workbook.WebApp
+   dotnet user-secrets set "SmtpSettings:Password" "YOUR_SMTP_PASSWORD" --project Workbook.WebApp
+   dotnet user-secrets set "SmtpSettings:Host" "YOUR_SMTP_HOST" --project Workbook.WebApp
+   dotnet user-secrets set "SmtpSettings:Port" "587" --project Workbook.WebApp
+   ```
 
 ---
 
