@@ -2,7 +2,7 @@
 
 This is a modern ASP.NET Core Web App designed to facilitate a **continuous feedback loop** between managers (team leads) and new developers during their onboarding journey. Built using Clean Architecture principles, MediatR, and MongoDB, it provides a structured, responsive, and persistent space to document progress and receive mentor feedback.
 
-🚀 **Live Demo**: [developerworkbook-e3fza9e2hth7agd3.southafricanorth-01.azurewebsites.net](https://developerworkbook-e3fza9e2hth7agd3.southafricanorth-01.azurewebsites.net/)
+**Live Demo**: [developerworkbook-e3fza9e2hth7agd3.southafricanorth-01.azurewebsites.net](https://developerworkbook-e3fza9e2hth7agd3.southafricanorth-01.azurewebsites.net/)
 
 ---
 
