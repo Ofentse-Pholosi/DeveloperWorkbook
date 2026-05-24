@@ -1,32 +1,49 @@
-﻿@page
+@page
 @model AboutModel
 @{
     ViewData["Title"] = "About";
 }
 
-<div class="container mt-5">
-    <div class="text-center mb-5">
-        <h1 class="display-4">About Developer Workbook</h1>
-        <p class="lead">Empowering developers to onboard seamlessly into new teams and companies.</p>
+<div class="container py-5">
+    <div class="mb-5 text-center">
+        <span class="hero-eyebrow justify-content-center"><i class="fas fa-info-circle me-1"></i> Inside the Platform</span>
+        <h1 class="hero-headline mt-2 mb-3">About <span class="accent">Dev Workbook</span></h1>
+        <p class="hero-body mx-auto">Empowering engineers to navigate onboarding gracefully, share authentic feedback, and establish healthy communication channels with their managers.</p>
     </div>
 
-    <div class="row text-center">
-        <div class="col-md-6 mb-4">
-            <i class="fas fa-lightbulb fa-3x text-primary mb-3"></i>
-            <h3>Our Mission</h3>
-            <p>To provide developers with a structured and guided onboarding experience that promotes growth and learning.</p>
+    <div class="row g-4 mb-5">
+        <div class="col-md-6">
+            <div class="dw-card p-4 h-100">
+                <div class="bento-icon mb-4">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <h3 class="h4 fw-bold mb-3" style="color: var(--text-primary)">Our Mission</h3>
+                <p class="text-muted">Onboarding is more than setting up a local development environment. It's about aligning goals, understanding team cultural norms, and asking the right questions. We provide developers with a structured, interactive format to do just that, creating transparency and trust early on.</p>
+            </div>
         </div>
-        <div class="col-md-6 mb-4">
-            <i class="fas fa-tools fa-3x text-success mb-3"></i>
-            <h3>Our Features</h3>
-            <p>Autosaving, secure login, and section-based responses to ensure a smooth onboarding journey.</p>
+        <div class="col-md-6">
+            <div class="dw-card p-4 h-100">
+                <div class="bento-icon mb-4">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <h3 class="h4 fw-bold mb-3" style="color: var(--text-primary)">Core Features</h3>
+                <p class="text-muted">From secure passwordless OTP login to live synchronization and automatic mail alerts, Dev Workbook is built to minimize overhead. Draft your answers, submit them section by section, and receive notifications as your team lead reviews them.</p>
+            </div>
         </div>
     </div>
 
-    <div class="text-center mt-5">
-        <h2>Built With</h2>
-        <p class="mb-4">ASP.NET Core, MediatR, MongoDB, and cookie-based authentication.</p>
-        <p><strong>Developed by:</strong> <a href="https://www.linkedin.com/in/ofentse-pholosi" target="_blank">Ofentse Pholosi</a></p>
+    <div class="dw-card p-5 text-center">
+        <h3 class="h4 fw-bold mb-3" style="color: var(--text-primary)">Built With Modern Engineering</h3>
+        <p class="text-muted mb-4 max-w-[65ch] mx-auto">
+            Dev Workbook is built using ASP.NET Core Razor Pages, MediatR CQRS pattern, MongoDB database, and clean HTML5/CSS3. All data is securely stored in a scalable cloud database.
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="https://github.com/Ofentse-Pholosi" target="_blank" class="btn-hero-ghost" style="width: auto;">
+                <i class="fab fa-github me-1"></i> GitHub Profile
+            </a>
+            <a href="https://www.linkedin.com/in/ofentse-pholosi" target="_blank" class="btn-hero-primary" style="width: auto;">
+                <i class="fab fa-linkedin me-1"></i> Connect on LinkedIn
+            </a>
+        </div>
     </div>
 </div>
-

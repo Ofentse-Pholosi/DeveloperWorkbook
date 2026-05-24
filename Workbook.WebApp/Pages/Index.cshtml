@@ -1,41 +1,74 @@
-﻿@page
+@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dev Workbook — Structured onboarding for developers";
 }
 
-<div class="container mt-5">
-    <div class="text-center mb-5">
-        <h1 class="display-4">Welcome to Developer Workbook</h1>
-        <p class="lead">Your ultimate tool for onboarding into new teams and companies.</p>
-        <a asp-page="/Auth/Register" class="btn btn-primary btn-lg me-2">Get Started</a>
-        <a asp-page="/About" class="btn btn-outline-secondary btn-lg">Learn More</a>
+<!-- ── Hero ── -->
+<div class="hero-shell">
+
+    <!-- Left: Headline & CTAs -->
+    <div class="hero-left">
+        <p class="hero-eyebrow">
+            <i class="fas fa-circle" style="font-size:.45rem;vertical-align:middle"></i>
+            Structured Developer Onboarding
+        </p>
+        <h1 class="hero-headline">
+            Your first 90 days,<br>
+            <span class="accent">documented.</span>
+        </h1>
+        <p class="hero-body">
+            Dev Workbook gives new joiners a structured space to capture learning, 
+            track progress through onboarding milestones, and keep their manager 
+            informed — automatically.
+        </p>
+        <div class="hero-cta-row">
+            <a asp-page="/Auth/Register" id="getStartedBtn" class="btn-hero-primary">
+                <i class="fas fa-arrow-right"></i> Start your workbook
+            </a>
+            <a asp-page="/About" class="btn-hero-ghost">
+                See how it works
+            </a>
+        </div>
     </div>
 
-    <div class="text-center mt-5">
-        <h2>Why Choose This Developer Workbook?</h2>
-        <p>We provide a guided onboarding experience to help you integrate into your new team and company effortlessly.</p>
+    <!-- Right: Bento feature preview -->
+    <div class="hero-right">
+        <div class="hero-bento">
+
+            <div class="bento-card">
+                <div class="bento-icon"><i class="fas fa-book-open"></i></div>
+                <p class="bento-title">Section workbook</p>
+                <p class="bento-desc">Guided prompts per topic — culture, tools, codebase, team dynamics.</p>
+            </div>
+
+            <div class="bento-card">
+                <div class="bento-icon"><i class="fas fa-bell"></i></div>
+                <p class="bento-title">Auto-notify</p>
+                <p class="bento-desc">Manager gets an email the moment you submit a section.</p>
+            </div>
+
+            <div class="bento-card">
+                <div class="bento-icon"><i class="fas fa-chart-bar"></i></div>
+                <p class="bento-title">Track your milestones</p>
+                <p class="bento-desc">See exactly where you are across all sections at a glance.</p>
+                <div class="bento-stat-row">
+                    <div>
+                        <div class="bento-stat-val">6</div>
+                        <div class="bento-stat-label">Sections</div>
+                    </div>
+                    <div>
+                        <div class="bento-stat-val">3</div>
+                        <div class="bento-stat-label">Submitted</div>
+                    </div>
+                    <div>
+                        <div class="bento-stat-val">1</div>
+                        <div class="bento-stat-label">Reviewed</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
-    <div class="row text-center">
-        <div class="col-md-4 mb-4">
-            <i class="fas fa-book fa-3x text-primary mb-3"></i>
-            <h3>Structured Notes Taking</h3>
-            <p>Track your personal growth and learning journey with structured sections for reflection and note-taking.</p>
-        </div>
-        <div class="col-md-4 mb-4">
-            <i class="fas fa-save fa-3x text-success mb-3"></i>
-            <h3>Autosaving</h3>
-            <p>Never lose your progress with our autosaving feature, ensuring your data is always safe.</p>
-        </div>
-        <div class="col-md-4 mb-4">
-            <i class="fas fa-lock fa-3x text-warning mb-3"></i>
-            <h3>Secure Login</h3>
-            <p>Enjoy a secure and seamless login experience with cookie-based authentication.</p>
-        </div>
-
-        <br />
-        <strong><p>Try it out and track your progress</p></strong>
-    </div>
 </div>
-

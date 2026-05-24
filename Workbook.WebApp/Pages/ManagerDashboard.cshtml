@@ -4,25 +4,26 @@
     ViewData["Title"] = "Manager Dashboard";
 }
 
-<div class="container mt-4">
-    <div class="text-center mb-5">
-        <h1 class="display-5 fw-bold text-primary">Manager Dashboard</h1>
-        <p class="lead text-muted">Track the onboarding progress of your team members and provide regular feedback.</p>
+<div class="container py-5">
+    <div class="mb-5">
+        <span class="hero-eyebrow"><i class="fas fa-user-shield me-1"></i> Management Console</span>
+        <h1 class="hero-headline mt-2 mb-3">Manager Dashboard</h1>
+        <p class="hero-body">Track the onboarding progress of your team members, review their milestone responses, and sign off with structured feedback.</p>
     </div>
 
     @if (!Model.DirectReports.Any())
     {
-        <div class="card border-0 shadow-sm p-5 text-center bg-light">
-            <div class="mb-3">
-                <i class="fas fa-users fa-3x text-muted"></i>
+        <div class="dw-card p-5 text-center">
+            <div class="bento-icon mx-auto mb-4">
+                <i class="fas fa-users"></i>
             </div>
-            <h3>No Direct Reports Found</h3>
-            <p class="text-muted">Developers can set your email as their "Team Lead Email" during registration to appear here.</p>
+            <h3 class="h4 fw-bold mb-2" style="color: var(--text-primary)">No Direct Reports Found</h3>
+            <p class="text-muted max-w-[50ch] mx-auto mb-0">Developers can set your email as their "Team Lead Email" during registration to appear here in your dashboard.</p>
         </div>
     }
     else
     {
-        <div class="row">
+        <div class="row g-4">
             @foreach (var report in Model.DirectReports)
             {
                 var dev = report.Developer;
@@ -30,65 +31,77 @@
                 var progressPercent = total > 0 ? (int)Math.Round((double)(report.ReviewedSectionsCount + report.SubmittedSectionsCount) / total * 100) : 0;
                 var completionPercent = total > 0 ? (int)Math.Round((double)report.ReviewedSectionsCount / total * 100) : 0;
 
-                <div class="col-md-6 mb-4">
-                    <div class="card border-0 shadow-sm rounded-3 hover-shadow transition-all overflow-hidden h-100">
-                        <div class="card-body p-4">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px; font-size: 20px; font-weight: bold;">
+                <div class="col-md-6">
+                    <div class="dw-card p-4 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <!-- Header Info -->
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="avatar-circle me-3">
                                     @dev.FirstName[0]@dev.LastName[0]
                                 </div>
                                 <div>
-                                    <h5 class="card-title fw-bold mb-0">@dev.FirstName @dev.LastName</h5>
+                                    <h4 class="h5 fw-bold mb-0" style="color: var(--text-primary)">@dev.FirstName @dev.LastName</h4>
                                     <span class="text-muted small">@dev.DevPosition</span>
                                 </div>
                             </div>
-                            
-                            <hr class="text-muted my-3" />
 
-                            <div class="mb-3 small">
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span class="text-muted">Company & Team:</span>
-                                    <span class="fw-medium">@dev.CompanyName / @dev.TeamName</span>
+                            <!-- Meta details -->
+                            <div class="mb-4 text-muted small border-top border-bottom border-secondary border-opacity-10 py-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Team Context</span>
+                                    <span class="fw-medium" style="color: var(--text-primary)">@dev.CompanyName / @dev.TeamName</span>
                                 </div>
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span class="text-muted">Date Joined:</span>
-                                    <span class="fw-medium">@dev.DateJoinedTeam.ToString("yyyy-MM-dd")</span>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Joined Date</span>
+                                    <span class="fw-medium font-mono" style="color: var(--text-primary)">@dev.DateJoinedTeam.ToString("yyyy-MM-dd")</span>
                                 </div>
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span class="text-muted">Email:</span>
-                                    <span class="fw-medium">@dev.Email</span>
+                                <div class="d-flex justify-content-between">
+                                    <span>Email Address</span>
+                                    <span class="fw-medium" style="color: var(--text-primary)">@dev.Email</span>
                                 </div>
                             </div>
 
+                            <!-- Progress metrics -->
                             <div class="mb-3">
-                                <div class="d-flex justify-content-between mb-1 small">
-                                    <span class="text-muted">Total Progress (Submitted/Reviewed)</span>
-                                    <span class="fw-bold">@progressPercent%</span>
+                                <div class="d-flex justify-content-between mb-2 small">
+                                    <span class="text-muted">Total Progress (Submitted / Reviewed)</span>
+                                    <span class="fw-bold font-mono" style="color: var(--text-primary)">@progressPercent%</span>
                                 </div>
-                                <div class="progress rounded-pill" style="height: 8px;">
-                                    <div class="progress-bar bg-warning" role="progressbar" style="width: @progressPercent%" aria-valuenow="@progressPercent" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-track">
+                                    <div class="progress-bar-fill fill-amber" style="width: @progressPercent%"></div>
                                 </div>
                             </div>
 
                             <div class="mb-4">
-                                <div class="d-flex justify-content-between mb-1 small">
+                                <div class="d-flex justify-content-between mb-2 small">
                                     <span class="text-muted">Reviewed & Signed-off</span>
-                                    <span class="fw-bold">@completionPercent%</span>
+                                    <span class="fw-bold font-mono" style="color: var(--text-primary)">@completionPercent%</span>
                                 </div>
-                                <div class="progress rounded-pill" style="height: 8px;">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: @completionPercent%" aria-valuenow="@completionPercent" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-track">
+                                    <div class="progress-bar-fill fill-green" style="width: @completionPercent%"></div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex gap-2">
-                                    <span class="badge bg-warning text-dark">@report.SubmittedSectionsCount To Review</span>
-                                    <span class="badge bg-success">@report.ReviewedSectionsCount Reviewed</span>
-                                </div>
-                                <a asp-page="/ManagerReview" asp-route-email="@dev.Email" class="btn btn-primary btn-sm rounded-pill px-3">
-                                    Review Workbook <i class="fas fa-chevron-right ms-1 small"></i>
-                                </a>
+                        <!-- Footer Actions & Badges -->
+                        <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-secondary border-opacity-10">
+                            <div class="d-flex gap-2">
+                                @if (report.SubmittedSectionsCount > 0)
+                                {
+                                    <span class="dw-badge dw-badge-amber">@report.SubmittedSectionsCount To Review</span>
+                                }
+                                @if (report.ReviewedSectionsCount > 0)
+                                {
+                                    <span class="dw-badge dw-badge-green">@report.ReviewedSectionsCount Reviewed</span>
+                                }
+                                @if (report.SubmittedSectionsCount == 0 && report.ReviewedSectionsCount == 0)
+                                {
+                                    <span class="dw-badge dw-badge-neutral">No Submissions</span>
+                                }
                             </div>
+                            <a asp-page="/ManagerReview" asp-route-email="@dev.Email" class="btn-hero-primary" style="width: auto; padding: 0.5rem 1.1rem; font-size: 0.8rem;">
+                                Review Workbook <i class="fas fa-chevron-right ms-2 small"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -96,13 +109,3 @@
         </div>
     }
 </div>
-
-<style>
-    .hover-shadow:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
-    }
-    .transition-all {
-        transition: all 0.3s ease;
-    }
-</style>

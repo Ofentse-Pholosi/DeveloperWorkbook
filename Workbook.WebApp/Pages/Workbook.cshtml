@@ -4,19 +4,21 @@
     ViewData["Title"] = "Workbook";
 }
 
-<div class="container mt-4">
-    <div class="text-center mb-5">
-        <h1 class="display-5 fw-bold text-primary">Onboarding Workbook</h1>
-        <p class="lead text-muted">Document your integration, reflect on your goals, and receive feedback from your manager.</p>
+<div class="container py-5 animate-fade-in">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-5">
+        <div>
+            <span class="hero-eyebrow"><i class="fas fa-book me-1"></i> Interactive Guide</span>
+            <h1 class="hero-headline mt-2 mb-1">Onboarding Workbook</h1>
+            <p class="hero-body mb-0">Document your integration, reflect on your goals, and receive feedback from your manager.</p>
+        </div>
+        <div>
+            <button type="button" class="btn-hero-ghost" style="width: auto; padding: 0.5rem 1.1rem; font-size: 0.82rem;" id="recoverButton" onclick="recoverWorkbook()">
+                <i class="fas fa-sync-alt me-2"></i> Sync from Cloud
+            </button>
+        </div>
     </div>
 
-    <div class="d-flex justify-content-end mb-3">
-        <button type="button" class="btn btn-outline-secondary btn-sm" id="recoverButton" onclick="recoverWorkbook()">
-            <i class="fas fa-undo me-1"></i> Sync from Cloud
-        </button>
-    </div>
-
-    <div class="accordion shadow-sm" id="workbookAccordion">
+    <div class="accordion" id="workbookAccordion">
         @foreach (var workbookSection in Model.WorkbookSections)
         {
             var title = workbookSection.Title ?? "Untitled Section";
@@ -24,30 +26,39 @@
             var savedSection = Model.SavedAnswers.ContainsKey(title) ? Model.SavedAnswers[title] : null;
             var status = savedSection?.Status ?? "Draft";
 
-            <div class="accordion-item border-0 mb-3 rounded-3 overflow-hidden shadow-sm">
+            <div class="accordion-item">
                 <h2 class="accordion-header" id="heading-@sectionId">
-                    <button class="accordion-button collapsed bg-light text-dark fw-semibold d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@sectionId" aria-expanded="false" aria-controls="collapse-@sectionId">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@sectionId" aria-expanded="false" aria-controls="collapse-@sectionId">
                         <span class="me-auto">@title</span>
-                        <span class="badge rounded-pill me-3 @(status == "Reviewed" ? "bg-success" : status == "Submitted" ? "bg-warning text-dark" : "bg-secondary")">
-                            @status
-                        </span>
+                        @if (status == "Reviewed")
+                        {
+                            <span class="dw-badge dw-badge-green me-3">Reviewed</span>
+                        }
+                        else if (status == "Submitted")
+                        {
+                            <span class="dw-badge dw-badge-amber me-3">Submitted</span>
+                        }
+                        else
+                        {
+                            <span class="dw-badge dw-badge-neutral me-3">Draft</span>
+                        }
                     </button>
                 </h2>
                 <div id="collapse-@sectionId" class="accordion-collapse collapse" aria-labelledby="heading-@sectionId" data-bs-parent="#workbookAccordion">
-                    <div class="accordion-body bg-white border-top p-4">
+                    <div class="accordion-body">
                         
                         @if (savedSection != null && !string.IsNullOrEmpty(savedSection.ManagerFeedback))
                         {
-                            <div class="card border-0 bg-info-subtle mb-4 rounded-3 p-3">
+                            <div class="feedback-highlight mb-4">
                                 <div class="d-flex align-items-center mb-2">
-                                    <i class="fas fa-comment-dots text-info-emphasis fa-lg me-2"></i>
-                                    <strong class="text-info-emphasis me-auto">Manager Feedback</strong>
+                                    <i class="fas fa-quote-left accent me-2"></i>
+                                    <strong class="me-auto" style="color: var(--text-primary)">Manager Feedback</strong>
                                     @if (savedSection.FeedbackDate.HasValue)
                                     {
                                         <span class="text-muted small">@savedSection.FeedbackDate.Value.ToString("g")</span>
                                     }
                                 </div>
-                                <p class="card-text text-dark-emphasis mb-0 fst-italic">"@savedSection.ManagerFeedback"</p>
+                                <p class="mb-0 text-muted fst-italic">"@savedSection.ManagerFeedback"</p>
                             </div>
                         }
 
@@ -57,23 +68,23 @@
                             @foreach (var question in workbookSection.Questions ?? new List<string>())
                             {
                                 var savedValue = savedSection?.Answers != null && savedSection.Answers.ContainsKey(question) ? savedSection.Answers[question] : "";
-                                <div class="mb-4">
-                                    <label class="form-label fw-medium text-secondary">@question</label>
-                                    <textarea class="form-control rounded-2 border-muted" 
+                                <div class="dw-field mb-4">
+                                    <label>@question</label>
+                                    <textarea class="dw-input" 
                                               name="answers[@question]" 
                                               data-section="@title" 
                                               data-question="@question" 
-                                              rows="3" 
+                                              rows="4" 
                                               placeholder="Type your response here...">@savedValue</textarea>
                                 </div>
                             }
 
-                            <div class="d-flex justify-content-end gap-2 mt-3 pt-3 border-top">
-                                <button type="submit" name="action" value="Save" class="btn btn-outline-primary px-3 rounded-pill">
-                                    <i class="fas fa-save me-1"></i> Save Draft
+                            <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top border-secondary border-opacity-10">
+                                <button type="submit" name="action" value="Save" class="btn-hero-ghost" style="width: auto;">
+                                    <i class="fas fa-save me-2"></i> Save Draft
                                 </button>
-                                <button type="submit" name="action" value="Submit" class="btn btn-primary px-3 rounded-pill">
-                                    <i class="fas fa-paper-plane me-1"></i> Submit to Manager
+                                <button type="submit" name="action" value="Submit" class="btn-hero-primary" style="width: auto;">
+                                    <i class="fas fa-paper-plane me-2"></i> Submit to Manager
                                 </button>
                             </div>
                         </form>
@@ -109,5 +120,3 @@
         }
     }
 </script>
-
-

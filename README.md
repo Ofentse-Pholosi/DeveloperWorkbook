@@ -69,16 +69,16 @@ DeveloperWorkbook
 
 ### Prerequisites
 * [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
-* [MongoDB Community Server](https://www.mongodb.com/try/download/community) running locally on port `27017`
+* **MongoDB**: A running MongoDB instance. By default, the project is pre-configured to connect to a cloud-hosted MongoDB Atlas cluster for instant setup. Alternatively, you can run [MongoDB Community Server](https://www.mongodb.com/try/download/community) locally on port `27017`.
 
 ### Running the App
 1. Clone the repository and navigate to the project directory:
    ```bash
    cd c:/Projects/DeveloperWorkbook
    ```
-2. Verify database settings in `Workbook.WebApp/appsettings.json`. By default, it connects to `mongodb://localhost:27017/`.
+2. Verify database settings in [appsettings.json](file:///c:/Projects/DeveloperWorkbook/Workbook.WebApp/appsettings.json). The cluster connection string is located under `MongoDbSettings.ConnectionString`.
 3. Launch the development server:
    ```bash
    dotnet run --project Workbook.WebApp
    ```
-4. Open your browser and navigate to `https://localhost:7198` (or the HTTP port output in the terminal).
+4. Open your browser and navigate to `http://localhost:5043` (or the HTTP port output in the terminal).
