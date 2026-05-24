@@ -1,0 +1,138 @@
+@page
+@model Workbook.WebApp.Pages.Auth.ManagerLoginModel
+@{
+    ViewData["Title"] = "Manager sign-in";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+    var step = Model.Step > 0 ? Model.Step : (TempData.Peek("OtpEmail") != null ? 2 : 1);
+}
+
+<div class="auth-shell">
+
+    <!-- ── Left: Brand panel ── -->
+    <div class="auth-panel-brand">
+        <p class="auth-brand-eyebrow">Team Lead Access</p>
+        <h1 class="auth-brand-headline">
+            Secure manager<br><span>sign-in.</span>
+        </h1>
+        <p class="auth-brand-body">
+            Your identity is verified with a one-time code sent directly to your email.
+            No password stored — no shared credentials.
+        </p>
+        <ul class="auth-feature-list">
+            <li>
+                <span class="feat-icon"><i class="fas fa-envelope-open-text"></i></span>
+                Code delivered to your registered email
+            </li>
+            <li>
+                <span class="feat-icon"><i class="fas fa-clock"></i></span>
+                Code expires after 10 minutes
+            </li>
+            <li>
+                <span class="feat-icon"><i class="fas fa-shield-alt"></i></span>
+                Single-use — replay attacks blocked
+            </li>
+        </ul>
+    </div>
+
+    <!-- ── Right: Form panel ── -->
+    <div class="auth-panel-form">
+        <div class="auth-form-box">
+
+            <!-- Step indicator -->
+            <div class="otp-step-track">
+                <div class="otp-step-node @(step >= 1 ? "active" : "pending")">1</div>
+                <span class="otp-step-label @(step >= 1 ? "active" : "pending")">Email</span>
+                <div class="otp-step-line @(step >= 2 ? "done" : "pending")"></div>
+                <div class="otp-step-node @(step >= 2 ? "active" : "pending")">2</div>
+                <span class="otp-step-label @(step >= 2 ? "active" : "pending")">Verify</span>
+            </div>
+
+            @if (step == 1)
+            {
+                <h2 class="auth-form-title">Enter your email</h2>
+                <p class="auth-form-subtitle">
+                    We'll send a 6-digit code to your team lead address.
+                </p>
+
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="dw-alert-error">
+                        <i class="fas fa-exclamation-circle" style="margin-top:1px;flex-shrink:0"></i>
+                        @Model.ErrorMessage
+                    </div>
+                }
+
+                <form method="post" asp-page-handler="SendOtp">
+                    <div class="dw-field">
+                        <label for="Email">Team lead email</label>
+                        <div class="dw-input-group">
+                            <i class="fas fa-envelope dw-input-icon"></i>
+                            <input type="email" id="Email" name="Email"
+                                   class="dw-input form-control"
+                                   placeholder="lead@company.com"
+                                   value="@Model.Email" required autofocus />
+                        </div>
+                    </div>
+
+                    <button type="submit" id="sendOtpBtn" class="btn-dw-primary">
+                        <i class="fas fa-paper-plane"></i> Send login code
+                    </button>
+                </form>
+            }
+            else
+            {
+                <h2 class="auth-form-title">Check your email</h2>
+                <p class="auth-form-subtitle">
+                    A 6-digit code was sent to
+                    <strong style="color:var(--text-primary)">@(TempData.Peek("OtpEmail") ?? Model.Email)</strong>.
+                    Enter it below.
+                </p>
+
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="dw-alert-error">
+                        <i class="fas fa-exclamation-circle" style="margin-top:1px;flex-shrink:0"></i>
+                        @Model.ErrorMessage
+                    </div>
+                }
+
+                <form method="post" asp-page-handler="VerifyOtp">
+                    <input type="hidden" name="Email" value="@(TempData.Peek("OtpEmail") ?? Model.Email)" />
+
+                    <div class="dw-field">
+                        <label for="OtpCode">One-time code</label>
+                        <input type="text" id="OtpCode" name="OtpCode"
+                               class="otp-input"
+                               maxlength="6" inputmode="numeric" pattern="\d{6}"
+                               placeholder="— — — — — —"
+                               autocomplete="one-time-code"
+                               required autofocus />
+                        <span class="dw-input-hint" style="display:flex;align-items:center;gap:.35rem;margin-top:.5rem;">
+                            <i class="fas fa-clock" style="font-size:.7rem"></i>
+                            Expires in 10 minutes
+                        </span>
+                    </div>
+
+                    <button type="submit" id="verifyOtpBtn" class="btn-dw-primary">
+                        <i class="fas fa-check-circle"></i> Verify and sign in
+                    </button>
+                </form>
+
+                <a asp-page="/Auth/ManagerLogin"
+                   class="btn-dw-ghost" style="text-align:center;justify-content:center;display:flex;">
+                    <i class="fas fa-redo" style="font-size:.75rem"></i> Request a new code
+                </a>
+            }
+
+            <div style="margin-top:1.5rem;text-align:center;">
+                <a asp-page="/Auth/Login"
+                   style="font-size:.78rem; color:var(--text-sub); display:inline-flex; align-items:center; gap:.35rem;">
+                    <i class="fas fa-arrow-left" style="font-size:.7rem"></i>
+                    Back to developer sign-in
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+</div>

@@ -1,36 +1,91 @@
-﻿@page
+@page
 @model Workbook.WebApp.Pages.Auth.LoginModel
 @{
-    ViewData["Title"] = "Login";
-}
-@{
+    ViewData["Title"] = "Sign in";
     Layout = "~/Pages/Shared/_Layout.cshtml";
 }
 
-<div class="container border rounded p-4 mt-4 shadow-sm">
-    <h2 class="text-center">Login</h2>
-    <p class="text-center">Please enter your email and password to log in.</p>
-    <form method="post">
-        <div class="mb-3">
-            <label for="email" class="form-label">Email:</label>
-            <input type="email" asp-for="Input.Email" class="form-control" id="email" placeholder="Enter your email" required />
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Password:</label>
-            <input type="password" asp-for="Input.Password" class="form-control" id="password" placeholder="Enter your password" required />
-        </div>
-        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
-        {
-            <div class="alert alert-danger" role="alert">
-                @Model.ErrorMessage
-            </div>
-        }
-        <div class="d-grid">
-            <button type="submit" class="btn btn-primary">Login</button>
-        </div>
-        <div class="text-center mt-3">
-            <p>Don’t have an account? <a asp-page="/Auth/Register">Register here</a>.</p>
-        </div>
-    </form>
-</div>
+<div class="auth-shell">
 
+    <!-- ── Left: Brand panel ── -->
+    <div class="auth-panel-brand">
+        <p class="auth-brand-eyebrow">Developer Onboarding</p>
+        <h1 class="auth-brand-headline">
+            Your workbook.<br>Your <span>progress</span>.
+        </h1>
+        <p class="auth-brand-body">
+            Sign in to continue filling in your onboarding sections, track your growth,
+            and share updates with your team lead.
+        </p>
+        <ul class="auth-feature-list">
+            <li>
+                <span class="feat-icon"><i class="fas fa-file-alt"></i></span>
+                Structured section-by-section workbook
+            </li>
+            <li>
+                <span class="feat-icon"><i class="fas fa-cloud-upload-alt"></i></span>
+                Auto-save drafts, submit when ready
+            </li>
+            <li>
+                <span class="feat-icon"><i class="fas fa-comments"></i></span>
+                Receive manager feedback in-context
+            </li>
+        </ul>
+    </div>
+
+    <!-- ── Right: Form panel ── -->
+    <div class="auth-panel-form">
+        <div class="auth-form-box">
+            <h2 class="auth-form-title">Welcome back</h2>
+            <p class="auth-form-subtitle">Enter your credentials to access your workbook.</p>
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="dw-alert-error">
+                    <i class="fas fa-exclamation-circle" style="margin-top:1px;flex-shrink:0"></i>
+                    @Model.ErrorMessage
+                </div>
+            }
+
+            <form method="post">
+                <div class="dw-field">
+                    <label for="email">Email address</label>
+                    <div class="dw-input-group">
+                        <i class="fas fa-envelope dw-input-icon"></i>
+                        <input type="email" asp-for="Input.Email" id="email"
+                               class="dw-input form-control" placeholder="you@company.com" required autofocus />
+                    </div>
+                </div>
+
+                <div class="dw-field">
+                    <label for="password">Password</label>
+                    <div class="dw-input-group">
+                        <i class="fas fa-lock dw-input-icon"></i>
+                        <input type="password" asp-for="Input.Password" id="password"
+                               class="dw-input form-control" placeholder="••••••••" required />
+                    </div>
+                </div>
+
+                <button type="submit" id="loginBtn" class="btn-dw-primary">
+                    <i class="fas fa-arrow-right-to-bracket"></i> Sign in
+                </button>
+            </form>
+
+            <div style="margin-top:1.5rem; text-align:center;">
+                <span style="font-size:.82rem; color:var(--text-sub)">New to Dev Workbook?</span>
+                <a asp-page="/Auth/Register" style="font-size:.82rem; font-weight:600; margin-left:.3rem;">
+                    Create an account
+                </a>
+            </div>
+
+            <div style="margin-top:.75rem; text-align:center;">
+                <a asp-page="/Auth/ManagerLogin"
+                   style="font-size:.78rem; color:var(--text-sub); display:inline-flex; align-items:center; gap:.35rem;">
+                    <i class="fas fa-user-shield" style="font-size:.7rem"></i>
+                    Team lead? Manager sign-in
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>

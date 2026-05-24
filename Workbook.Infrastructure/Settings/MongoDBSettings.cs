@@ -1,4 +1,4 @@
-﻿namespace Workbook.Infrastructure.Settings;
+namespace Workbook.Infrastructure.Settings;
 
 public class MongoDBSettings
 {
@@ -6,4 +6,5 @@ public class MongoDBSettings
     public string DatabaseName { get; set; } = string.Empty;
     public string UsersCollection { get; set; } = "Users";
     public string WorkbookAnswersCollection { get; set; } = "WorkbookAnswers";
+    public string OtpsCollection { get; set; } = "Otps";
 }

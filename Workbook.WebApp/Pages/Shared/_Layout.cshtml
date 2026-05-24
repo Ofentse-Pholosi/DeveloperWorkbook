@@ -5,20 +5,25 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Developer Workbook Web App</title>
+    <meta name="description" content="Dev Workbook — structured onboarding for developers joining new teams." />
+    <title>@ViewData["Title"] — Dev Workbook</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Workbook.WebApp.styles.css" asp-append-version="true" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 </head>
 
 <body>
+    <!-- ── Navbar ── -->
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="dw-navbar navbar navbar-expand-sm">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">Developer Workbook</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <a class="navbar-brand" asp-area="" asp-page="/Index">
+                    <span class="brand-dot"></span>Dev Workbook
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -27,10 +32,14 @@
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Dashboard">Dashboard</a>
+                                <a class="nav-link" asp-area="" asp-page="/Dashboard">
+                                    <i class="fas fa-th-large me-1" style="font-size:.75rem"></i>Dashboard
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Workbook">My Workbook</a>
+                                <a class="nav-link" asp-area="" asp-page="/Workbook">
+                                    <i class="fas fa-book-open me-1" style="font-size:.75rem"></i>My Workbook
+                                </a>
                             </li>
                             var email = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
                             if (!string.IsNullOrEmpty(email))
@@ -39,7 +48,9 @@
                                 if (reports.Any())
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-page="/ManagerDashboard">Manager Dashboard</a>
+                                        <a class="nav-link" asp-area="" asp-page="/ManagerDashboard">
+                                            <i class="fas fa-users-cog me-1" style="font-size:.75rem"></i>Manager View
+                                        </a>
                                     </li>
                                 }
                             }
@@ -47,30 +58,40 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                                <a class="nav-link" asp-area="" asp-page="/Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-page="/About">About</a>
                             </li>
                         }
                     </ul>
-                    <ul class="navbar-nav">
+
+                    <ul class="navbar-nav align-items-center gap-1">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <li class="nav-item">
-                                <span class="nav-link text-muted me-3">Hello, @(User.FindFirst(System.Security.Claims.ClaimTypes.GivenName)?.Value ?? "Fellow Dev")!</span>
+                                <span class="nav-link nav-greeting">
+                                    @(User.FindFirst(System.Security.Claims.ClaimTypes.GivenName)?.Value ?? User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value?.Split('@')[0])
+                                </span>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Auth/Logout">Logout</a>
+                                <a class="nav-link nav-pill" asp-area="" asp-page="/Auth/Logout">
+                                    <i class="fas fa-sign-out-alt me-1" style="font-size:.7rem"></i>Sign out
+                                </a>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-page="/Auth/Login">Login</a>
+                                <a class="nav-link" asp-page="/Auth/Login">Sign in</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-page="/Auth/Register">Register</a>
+                                <a class="nav-link" asp-page="/Auth/ManagerLogin">
+                                    <i class="fas fa-user-shield me-1" style="font-size:.75rem"></i>Manager
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-page="/About">About</a>
+                                <a class="nav-link nav-pill" asp-page="/Auth/Register">Get started</a>
                             </li>
                         }
                     </ul>
@@ -79,32 +100,30 @@
         </nav>
     </header>
 
-    <div class="container">
-        <main role="main" class="pb-3">
+    <!-- ── Content ── -->
+    <div class="dw-main">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container d-flex flex-column justify-content-center align-items-center text-center">
-            <div>
-                <a>
-                    Let's connect:
-                </a>
-                <a href="https://github.com/Ofentse-Pholosi" target="_blank" class="me-3">
+    <!-- ── Footer ── -->
+    <footer class="dw-footer">
+        <div class="dw-footer-inner">
+            <span class="dw-footer-brand">Dev Workbook</span>
+            <div class="dw-footer-links">
+                <a href="https://github.com/Ofentse-Pholosi" target="_blank" title="GitHub">
                     <i class="fab fa-github"></i>
                 </a>
-                <a href="https://www.linkedin.com/in/ofentse-pholosi" target="_blank" class="me-3">
+                <a href="https://www.linkedin.com/in/ofentse-pholosi" target="_blank" title="LinkedIn">
                     <i class="fab fa-linkedin"></i>
                 </a>
-                <a href="https://www.instagram.com/ofentse.pholosi" target="_blank">
+                <a href="https://www.instagram.com/ofentse.pholosi" target="_blank" title="Instagram">
                     <i class="fab fa-instagram"></i>
                 </a>
             </div>
         </div>
     </footer>
-
-
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
