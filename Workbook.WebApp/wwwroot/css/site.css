@@ -925,3 +925,259 @@ code, .mono { font-family: var(--font-mono); }
 }
 .btn-dw-success:hover { background: #15803d; }
 .btn-dw-success:active { transform: scale(0.98); }
+
+/* ══════════════════════════════════════════════════════════════
+   3D Scene Backgrounds — Landing Hero | About Banner | Auth Brand
+   ══════════════════════════════════════════════════════════════ */
+
+:root {
+  --dark-bg:      #06090f;
+  --dark-surface: rgba(255,255,255,0.045);
+  --dark-border:  rgba(37,99,235,0.22);
+  --dark-text:    #f1f5f9;
+  --dark-muted:   rgba(241,245,249,0.62);
+  --dark-sub:     rgba(241,245,249,0.38);
+  --grid-line:    rgba(37,99,235,0.13);
+}
+
+/* ── Shared 3D scene wrapper ──────────────────────────────── */
+.dw-scene-3d {
+  position: relative;
+  background-color: transparent;
+  overflow: hidden;
+}
+
+/* Perspective floor grid */
+.dw-scene-3d::before {
+  content: '';
+  position: absolute;
+  bottom: -8%;
+  left: -70%;
+  right: -70%;
+  height: 68%;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      var(--grid-line) 0px, var(--grid-line) 1px,
+      transparent 1px, transparent 60px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      var(--grid-line) 0px, var(--grid-line) 1px,
+      transparent 1px, transparent 60px
+    );
+  transform: perspective(520px) rotateX(72deg);
+  transform-origin: 50% 100%;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* Top atmosphere + side vignettes (Light Blue theme) */
+.dw-scene-3d::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 85% 55% at 50% 0%,
+      rgba(37,99,235,0.12) 0%,
+      rgba(37,99,235,0.03) 45%,
+      transparent 70%);
+  pointer-events: none;
+}
+
+/* Horizon glow line */
+.scene-horizon {
+  position: absolute;
+  bottom: 31%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(37,99,235,.35) 20%,
+    rgba(37,99,235,.82) 50%,
+    rgba(37,99,235,.35) 80%,
+    transparent 100%
+  );
+  box-shadow: 0 0 28px 4px rgba(37,99,235,0.22);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Emerald secondary bloom */
+.scene-emerald {
+  position: absolute;
+  bottom: -15%;
+  right: 3%;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(16,185,129,0.13) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Landing hero overrides ─────────────────────────── */
+.dw-scene-3d.hero-shell .hero-left,
+.dw-scene-3d.hero-shell .hero-right {
+  position: relative;
+  z-index: 2;
+}
+
+.dw-scene-3d .bento-card {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.015);
+}
+.dw-scene-3d .bento-card:hover {
+  border-color: rgba(37, 99, 235, 0.3) !important;
+}
+
+/* ── About 3D banner ──────────────────────────────────────── */
+.about-3d-banner {
+  padding: 5.5rem 1.5rem 4.5rem;
+  text-align: center;
+}
+.about-3d-banner .scene-content {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+  margin: 0 auto;
+}
+.about-3d-banner .hero-eyebrow  { justify-content: center; }
+.about-3d-banner .hero-body {
+  margin-bottom: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── Auth brand panel 3D ──────────────────────────────────── */
+.auth-panel-brand--dark {
+  background-color: var(--dark-bg);
+}
+
+.auth-3d-grid {
+  position: absolute;
+  bottom: -8%;
+  left: -70%;
+  right: -70%;
+  height: 68%;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      var(--grid-line) 0px, var(--grid-line) 1px,
+      transparent 1px, transparent 52px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      var(--grid-line) 0px, var(--grid-line) 1px,
+      transparent 1px, transparent 52px
+    );
+  transform: perspective(480px) rotateX(72deg);
+  transform-origin: 50% 100%;
+  opacity: 0.9;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.auth-3d-atmosphere {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 90% 55% at 50% 0%,
+      rgba(37,99,235,0.35) 0%,
+      rgba(37,99,235,0.10) 45%,
+      transparent 70%),
+    radial-gradient(ellipse 38% 80% at 0% 50%,
+      rgba(6,9,15,0.7) 0%, transparent 100%),
+    radial-gradient(ellipse 38% 80% at 100% 50%,
+      rgba(6,9,15,0.7) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.auth-3d-horizon {
+  position: absolute;
+  bottom: 32%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(37,99,235,.35) 15%,
+    rgba(37,99,235,.75) 50%,
+    rgba(37,99,235,.35) 85%,
+    transparent 100%
+  );
+  box-shadow: 0 0 24px 3px rgba(37,99,235,0.2);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Auth brand content — floats above all 3D layers */
+.auth-brand-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+}
+
+.auth-panel-brand--dark .auth-brand-headline { color: var(--dark-text); }
+.auth-panel-brand--dark .auth-brand-body     { color: var(--dark-muted); }
+.auth-panel-brand--dark .auth-feature-list li { color: var(--dark-muted); }
+
+/* ── Prism Background Integration ───────────────────────────── */
+.dw-prism-bg {
+  background-image: linear-gradient(rgba(241, 245, 249, 0.86), rgba(241, 245, 249, 0.86)), url('../images/prism_background.png') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+}
+
+.dw-prism-bg .auth-panel-brand {
+  background: rgba(255, 255, 255, 0.45) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.dw-prism-bg .auth-panel-brand--dark .auth-brand-headline {
+  color: var(--text-primary) !important;
+}
+
+.dw-prism-bg .auth-panel-brand--dark .auth-brand-body {
+  color: var(--text-muted) !important;
+}
+
+.dw-prism-bg .auth-panel-brand--dark .auth-feature-list li {
+  color: var(--text-muted) !important;
+}
+
+/* Adjust 3D environment for light/prism theme */
+.dw-prism-bg .auth-3d-atmosphere {
+  background: radial-gradient(ellipse 90% 55% at 50% 0%,
+    rgba(37,99,235,0.15) 0%,
+    rgba(37,99,235,0.04) 45%,
+    transparent 70%) !important;
+}
+
+.dw-prism-bg .auth-3d-grid {
+  opacity: 0.45 !important;
+}
+
+.dw-prism-bg .auth-panel-form {
+  background: transparent !important;
+}
+
+.dw-prism-bg .dw-card {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}

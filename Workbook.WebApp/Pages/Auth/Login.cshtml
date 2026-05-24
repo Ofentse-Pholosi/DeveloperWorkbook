@@ -3,34 +3,40 @@
 @{
     ViewData["Title"] = "Sign in";
     Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["BodyClass"] = "dw-prism-bg";
 }
 
 <div class="auth-shell">
 
     <!-- ── Left: Brand panel ── -->
-    <div class="auth-panel-brand">
-        <p class="auth-brand-eyebrow">Developer Onboarding</p>
-        <h1 class="auth-brand-headline">
-            Your workbook.<br>Your <span>progress</span>.
-        </h1>
-        <p class="auth-brand-body">
-            Sign in to continue filling in your onboarding sections, track your growth,
-            and share updates with your team lead.
-        </p>
-        <ul class="auth-feature-list">
-            <li>
-                <span class="feat-icon"><i class="fas fa-file-alt"></i></span>
-                Structured section-by-section workbook
-            </li>
-            <li>
-                <span class="feat-icon"><i class="fas fa-cloud-upload-alt"></i></span>
-                Auto-save drafts, submit when ready
-            </li>
-            <li>
-                <span class="feat-icon"><i class="fas fa-comments"></i></span>
-                Receive manager feedback in-context
-            </li>
-        </ul>
+    <div class="auth-panel-brand auth-panel-brand--dark">
+        <div class="auth-3d-grid"></div>
+        <div class="auth-3d-atmosphere"></div>
+        <div class="auth-3d-horizon"></div>
+        <div class="auth-brand-content">
+            <p class="auth-brand-eyebrow">Developer Onboarding</p>
+            <h1 class="auth-brand-headline">
+                Your workbook.<br>Your <span>progress</span>.
+            </h1>
+            <p class="auth-brand-body">
+                Sign in to continue filling in your onboarding sections, track your growth,
+                and share updates with your team lead.
+            </p>
+            <ul class="auth-feature-list">
+                <li>
+                    <span class="feat-icon"><i class="fas fa-file-alt"></i></span>
+                    Structured section-by-section workbook
+                </li>
+                <li>
+                    <span class="feat-icon"><i class="fas fa-cloud-upload-alt"></i></span>
+                    Auto-save drafts, submit when ready
+                </li>
+                <li>
+                    <span class="feat-icon"><i class="fas fa-comments"></i></span>
+                    Receive manager feedback in-context
+                </li>
+            </ul>
+        </div>
     </div>
 
     <!-- ── Right: Form panel ── -->

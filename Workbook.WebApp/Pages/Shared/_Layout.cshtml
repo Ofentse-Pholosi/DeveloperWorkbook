@@ -14,7 +14,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 </head>
 
-<body>
+<body class="@ViewData["BodyClass"]">
     <!-- ── Navbar ── -->
     <header>
         <nav class="dw-navbar navbar navbar-expand-sm">
@@ -57,9 +57,6 @@
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-page="/Index">Home</a>
-                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-page="/About">About</a>
                             </li>

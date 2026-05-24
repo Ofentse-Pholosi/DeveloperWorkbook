@@ -3,34 +3,40 @@
 @{
     ViewData["Title"] = "Create account";
     Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["BodyClass"] = "dw-prism-bg";
 }
 
 <div class="auth-shell">
 
     <!-- ── Left: Brand panel ── -->
-    <div class="auth-panel-brand">
-        <p class="auth-brand-eyebrow">Get started</p>
-        <h1 class="auth-brand-headline">
-            Start your<br><span>onboarding</span><br>journey.
-        </h1>
-        <p class="auth-brand-body">
-            Create your developer profile. Once set up, your team lead will be notified
-            when you submit each section — giving them the context to support you effectively.
-        </p>
-        <ul class="auth-feature-list">
-            <li>
-                <span class="feat-icon"><i class="fas fa-user-check"></i></span>
-                Profile tied to your team and division
-            </li>
-            <li>
-                <span class="feat-icon"><i class="fas fa-bell"></i></span>
-                Manager notified on every submission
-            </li>
-            <li>
-                <span class="feat-icon"><i class="fas fa-shield-alt"></i></span>
-                Secure cookie authentication — no tokens stored
-            </li>
-        </ul>
+    <div class="auth-panel-brand auth-panel-brand--dark">
+        <div class="auth-3d-grid"></div>
+        <div class="auth-3d-atmosphere"></div>
+        <div class="auth-3d-horizon"></div>
+        <div class="auth-brand-content">
+            <p class="auth-brand-eyebrow">Get started</p>
+            <h1 class="auth-brand-headline">
+                Start your<br><span>onboarding</span><br>journey.
+            </h1>
+            <p class="auth-brand-body">
+                Create your developer profile. Once set up, your team lead will be notified
+                when you submit each section — giving them the context to support you effectively.
+            </p>
+            <ul class="auth-feature-list">
+                <li>
+                    <span class="feat-icon"><i class="fas fa-user-check"></i></span>
+                    Profile tied to your team and division
+                </li>
+                <li>
+                    <span class="feat-icon"><i class="fas fa-bell"></i></span>
+                    Manager notified on every submission
+                </li>
+                <li>
+                    <span class="feat-icon"><i class="fas fa-shield-alt"></i></span>
+                    Secure cookie authentication — no tokens stored
+                </li>
+            </ul>
+        </div>
     </div>
 
     <!-- ── Right: Form panel ── -->
