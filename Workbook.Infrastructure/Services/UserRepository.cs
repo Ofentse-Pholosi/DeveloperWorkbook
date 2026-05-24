@@ -1,4 +1,4 @@
-﻿using MongoDB.Driver;
+using MongoDB.Driver;
 using Workbook.Application.Interfaces;
 using Workbook.Core.Entities;
 using Workbook.Infrastructure.Data;
@@ -22,5 +22,10 @@ public class UserRepository : IUserRepository
     public async Task CreateAsync(Users user)
     {
         await _context.Users.InsertOneAsync(user);
+    }
+
+    public async Task<List<Users>> GetUsersByTeamLeadEmailAsync(string teamLeadEmail)
+    {
+        return await _context.Users.Find(u => u.TeamLeadEmail == teamLeadEmail).ToListAsync();
     }
 }

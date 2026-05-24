@@ -1,4 +1,4 @@
-﻿using MongoDB.Bson;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Workbook.Core.Entities
@@ -17,5 +17,14 @@ namespace Workbook.Core.Entities
 
         [BsonElement("Answers")]
         public Dictionary<string, string> Answers { get; set; } = new();
+
+        [BsonElement("Status")]
+        public string Status { get; set; } = "Draft"; // "Draft", "Submitted", "Reviewed"
+
+        [BsonElement("ManagerFeedback")]
+        public string ManagerFeedback { get; set; } = string.Empty;
+
+        [BsonElement("FeedbackDate")]
+        public DateTime? FeedbackDate { get; set; }
     }
 }

@@ -1,0 +1,117 @@
+@page
+@model ManagerReviewModel
+@{
+    ViewData["Title"] = $"Review: {Model.Developer.FirstName} {Model.Developer.LastName}";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="mb-3">
+        <a asp-page="/ManagerDashboard" class="btn btn-link text-decoration-none p-0 text-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Dev Info Profile Header Card -->
+    <div class="card border-0 shadow-sm rounded-3 bg-gradient-primary text-dark mb-4 p-4" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+        <div class="d-flex align-items-center">
+            <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-4 shadow-sm" style="width: 70px; height: 70px; font-size: 28px; font-weight: bold;">
+                @Model.Developer.FirstName[0]@Model.Developer.LastName[0]
+            </div>
+            <div>
+                <h1 class="h3 fw-bold mb-1">Onboarding Review: @Model.Developer.FirstName @Model.Developer.LastName</h1>
+                <p class="mb-0 text-muted">
+                    <span class="badge bg-secondary me-2">@Model.Developer.DevPosition</span>
+                    <span>Team: <strong>@Model.Developer.TeamName</strong></span>
+                    <span class="mx-2">|</span>
+                    <span>Division: <strong>@Model.Developer.DivisionName</strong></span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sections Accordion -->
+    <div class="accordion shadow-sm" id="reviewAccordion">
+        @foreach (var workbookSection in Model.WorkbookSections)
+        {
+            var title = workbookSection.Title ?? "Untitled Section";
+            var sectionId = title.Replace(" ", "");
+            var savedSection = Model.SavedAnswers.ContainsKey(title) ? Model.SavedAnswers[title] : null;
+            var status = savedSection?.Status ?? "Draft";
+
+            <div class="accordion-item border-0 mb-3 rounded-3 overflow-hidden shadow-sm">
+                <h2 class="accordion-header" id="heading-@sectionId">
+                    <button class="accordion-button collapsed bg-light text-dark fw-semibold d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@sectionId" aria-expanded="false" aria-controls="collapse-@sectionId">
+                        <span class="me-auto">@title</span>
+                        <span class="badge rounded-pill me-3 @(status == "Reviewed" ? "bg-success" : status == "Submitted" ? "bg-warning text-dark" : "bg-secondary")">
+                            @status
+                        </span>
+                    </button>
+                </h2>
+                <div id="collapse-@sectionId" class="accordion-collapse collapse" aria-labelledby="heading-@sectionId" data-bs-parent="#reviewAccordion">
+                    <div class="accordion-body bg-white border-top p-4">
+                        
+                        <!-- Answers List -->
+                        <div class="developer-responses mb-4">
+                            <h6 class="text-uppercase fw-bold text-muted small mb-3 tracking-wider">Developer Answers</h6>
+                            @foreach (var question in workbookSection.Questions ?? new List<string>())
+                            {
+                                var answerText = savedSection?.Answers != null && savedSection.Answers.ContainsKey(question) ? savedSection.Answers[question] : string.Empty;
+                                <div class="mb-3 p-3 bg-light rounded-2">
+                                    <div class="fw-semibold text-secondary mb-1">@question</div>
+                                    @if (string.IsNullOrWhiteSpace(answerText))
+                                    {
+                                        <div class="text-muted fst-italic">Not answered yet</div>
+                                    }
+                                    else
+                                    {
+                                        <div class="text-dark whitespace-pre-wrap">@answerText</div>
+                                    }
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Feedback Form -->
+                        <div class="feedback-form border-top pt-4">
+                            <h6 class="text-uppercase fw-bold text-muted small mb-3 tracking-wider">Manager Feedback & Sign-off</h6>
+                            
+                            <form asp-page-handler="SubmitFeedback" method="post">
+                                <input type="hidden" name="email" value="@Model.Email" />
+                                <input type="hidden" name="sectionTitle" value="@title" />
+                                
+                                <div class="mb-3">
+                                    <label class="form-label text-secondary small">Provide review comments, notes, or next steps:</label>
+                                    <textarea class="form-control rounded-2" 
+                                              name="feedbackText" 
+                                              rows="3" 
+                                              placeholder="Type your feedback here...">@(savedSection?.ManagerFeedback ?? string.Empty)</textarea>
+                                </div>
+
+                                <div class="d-flex justify-content-end align-items-center">
+                                    @if (savedSection?.FeedbackDate.HasValue == true)
+                                    {
+                                        <span class="text-muted small me-auto">
+                                            <i class="fas fa-check-circle text-success me-1"></i> Last updated: @savedSection.FeedbackDate.Value.ToString("g")
+                                        </span>
+                                    }
+                                    <button type="submit" class="btn btn-success px-4 rounded-pill">
+                                        <i class="fas fa-check me-1"></i> Submit & Mark Reviewed
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .tracking-wider {
+        letter-spacing: 0.05em;
+    }
+    .whitespace-pre-wrap {
+        white-space: pre-wrap;
+    }
+</style>

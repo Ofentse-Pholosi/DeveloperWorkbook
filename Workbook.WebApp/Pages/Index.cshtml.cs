@@ -14,7 +14,7 @@ public class IndexModel : PageModel
 
     public IActionResult OnGet()
     {
-        if (User.Identity.IsAuthenticated)
+        if (User.Identity?.IsAuthenticated == true)
         {
             return RedirectToPage("/Dashboard");
         }

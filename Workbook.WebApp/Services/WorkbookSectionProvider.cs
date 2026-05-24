@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Workbook.Application.Interfaces;
 using Workbook.Core.Entities;
 
@@ -19,7 +19,7 @@ public class WorkbookSectionProvider : IWorkbookSectionProvider
     {
         try
         {
-            var filePath = Path.Combine(_env.ContentRootPath, "Config", "workbookSections.json");
+            var filePath = Path.Combine(_env.ContentRootPath, "workbookSections.json");
             var json = await File.ReadAllTextAsync(filePath);
 
             var sections = JsonSerializer.Deserialize<List<WorkbookSection>>(json, new JsonSerializerOptions

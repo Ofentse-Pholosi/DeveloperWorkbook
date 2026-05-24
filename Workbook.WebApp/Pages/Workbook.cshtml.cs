@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
-using System.Text.Json;
+using Workbook.Application.Interfaces;
 using Workbook.Core.Entities;
 using Workbook.Infrastructure.Data;
 
@@ -11,60 +11,69 @@ namespace Workbook.WebApp.Pages;
 [Authorize]
 public class WorkbookModel : PageModel
 {
+    private readonly IWorkbookSectionProvider _sectionProvider;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly WorkbookAnswerRepository _workbookAnswerRepository;
 
-    public WorkbookModel(IHttpContextAccessor httpContextAccessor, WorkbookAnswerRepository workbookAnswerRepository)
+    public WorkbookModel(
+        IWorkbookSectionProvider sectionProvider,
+        IHttpContextAccessor httpContextAccessor, 
+        WorkbookAnswerRepository workbookAnswerRepository)
     {
+        _sectionProvider = sectionProvider;
         _httpContextAccessor = httpContextAccessor;
         _workbookAnswerRepository = workbookAnswerRepository;
     }
 
     public List<WorkbookSection> WorkbookSections { get; set; } = new();
+    public Dictionary<string, WorkbookAnswer> SavedAnswers { get; set; } = new();
 
     public async Task OnGetAsync()
     {
-        var jsonPath = Path.Combine(Directory.GetCurrentDirectory(), "workbookSections.json");
-        var jsonData = await System.IO.File.ReadAllTextAsync(jsonPath);
-        WorkbookSections = JsonSerializer.Deserialize<List<WorkbookSection>>(jsonData) ?? new List<WorkbookSection>();
+        WorkbookSections = await _sectionProvider.GetSectionsAsync();
 
-        TempData["WorkbookSections"] = JsonSerializer.Serialize(WorkbookSections);
+        var email = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value;
+        if (!string.IsNullOrEmpty(email))
+        {
+            var answers = await _workbookAnswerRepository.GetWorkbookAnswersByEmailAsync(email);
+            // Deduplicate in case old data has duplicates (fallback)
+            SavedAnswers = answers
+                .GroupBy(a => a.SectionTitle)
+                .ToDictionary(g => g.Key, g => g.First());
+        }
     }
 
-    public async Task<IActionResult> OnPostAsync(Dictionary<string, WorkbookSectionInput> sections)
+    public async Task<IActionResult> OnPostAsync(string sectionTitle, string action, Dictionary<string, string> answers)
     {
-        if (TempData["WorkbookSections"] is string serializedSections)
-        {
-            WorkbookSections = JsonSerializer.Deserialize<List<WorkbookSection>>(serializedSections) ?? new List<WorkbookSection>();
-        }
-
         var email = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Email)?.Value;
         if (string.IsNullOrEmpty(email))
         {
             return Unauthorized();
         }
 
-        foreach (var section in sections)
+        var existingAnswers = await _workbookAnswerRepository.GetWorkbookAnswersByEmailAsync(email);
+        var existingSection = existingAnswers.FirstOrDefault(a => a.SectionTitle == sectionTitle);
+
+        var workbookAnswer = existingSection ?? new WorkbookAnswer
         {
-            var workbookAnswer = new WorkbookAnswer
-            {
-                Email = email,
-                SectionTitle = section.Value.Title,
-                Answers = section.Value.Answers ?? new Dictionary<string, string>()
-            };
+            Email = email,
+            SectionTitle = sectionTitle
+        };
 
-            foreach (var question in WorkbookSections.First(s => s.Title == section.Value.Title).Questions)
-            {
-                if (!workbookAnswer.Answers.ContainsKey(question))
-                {
-                    workbookAnswer.Answers[question] = string.Empty;
-                }
-            }
-
-            await _workbookAnswerRepository.SaveWorkbookAnswerAsync(workbookAnswer);
+        workbookAnswer.Answers = answers ?? new Dictionary<string, string>();
+        
+        if (action == "Submit")
+        {
+            workbookAnswer.Status = "Submitted";
+        }
+        else
+        {
+            workbookAnswer.Status = "Draft";
         }
 
-        return RedirectToPage("/Workbook");
+        await _workbookAnswerRepository.SaveWorkbookAnswerAsync(workbookAnswer);
+
+        return RedirectToPage();
     }
 
     public async Task<IActionResult> OnGetRecoverAsync()
@@ -76,17 +85,13 @@ public class WorkbookModel : PageModel
         }
 
         var savedAnswers = await _workbookAnswerRepository.GetWorkbookAnswersByEmailAsync(email);
-        var result = savedAnswers.ToDictionary(
-            answer => answer.SectionTitle,
-            answer => answer.Answers
-        );
+        var result = savedAnswers
+            .GroupBy(a => a.SectionTitle)
+            .ToDictionary(
+                g => g.Key,
+                g => g.First().Answers
+            );
 
         return new JsonResult(result);
-    }
-
-    public sealed class WorkbookSectionInput
-    {
-        public string Title { get; set; } = string.Empty;
-        public Dictionary<string, string> Answers { get; set; } = new();
     }
 }

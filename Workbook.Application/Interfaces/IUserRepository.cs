@@ -1,8 +1,9 @@
-﻿using Workbook.Core.Entities;
+using Workbook.Core.Entities;
 
 namespace Workbook.Application.Interfaces;
 public interface IUserRepository
 {
     Task<Core.Entities.Users?> GetUserEmailAsync(string email);
     Task CreateAsync(Core.Entities.Users user);
+    Task<List<Core.Entities.Users>> GetUsersByTeamLeadEmailAsync(string teamLeadEmail);
 }
