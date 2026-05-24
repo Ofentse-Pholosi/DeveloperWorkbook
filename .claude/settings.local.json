@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build *)",
+      "Bash(netstat -ano)",
+      "WebFetch(domain:localhost)",
+      "Bash(curl -s http://localhost:5043/)",
+      "Bash(curl -s http://localhost:5043/About)",
+      "Bash(curl -s http://localhost:5043/Auth/Login)",
+      "Bash(tasklist /FI \"PID eq 5096\")",
+      "PowerShell(Get-Process -Id 5096 -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 5043 -ErrorAction SilentlyContinue | Select-Object LocalPort, OwningProcess | ForEach-Object { $p = Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue; [PSCustomObject]@{Port=$_.LocalPort; PID=$_.OwningProcess; Name=$p.ProcessName} })",
+      "Bash(dotnet run *)",
+      "PowerShell(Stop-Process -Id 32044, 33052 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(Start-Process -FilePath \"dotnet\" -ArgumentList \"run --project Workbook.WebApp/Workbook.WebApp.csproj --launch-profile http\" -WorkingDirectory \"C:\\\\Projects\\\\DeveloperWorkbook\" -WindowStyle Hidden)"
+    ]
+  }
+}

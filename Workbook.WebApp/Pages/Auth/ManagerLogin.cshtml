@@ -4,6 +4,7 @@
     ViewData["Title"] = "Manager sign-in";
     Layout = "~/Pages/Shared/_Layout.cshtml";
     var step = Model.Step > 0 ? Model.Step : (TempData.Peek("OtpEmail") != null ? 2 : 1);
+    ViewData["BodyClass"] = "dw-prism-bg";
 }
 
 <div class="auth-shell">

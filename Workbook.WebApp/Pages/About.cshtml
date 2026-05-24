@@ -2,15 +2,20 @@
 @model AboutModel
 @{
     ViewData["Title"] = "About";
+    ViewData["BodyClass"] = "dw-prism-bg";
 }
 
-<div class="container py-5">
-    <div class="mb-5 text-center">
-        <span class="hero-eyebrow justify-content-center"><i class="fas fa-info-circle me-1"></i> Inside the Platform</span>
+<div class="about-3d-banner dw-scene-3d">
+    <div class="scene-horizon"></div>
+    <div class="scene-emerald"></div>
+    <div class="scene-content">
+        <span class="hero-eyebrow"><i class="fas fa-info-circle me-1"></i> Inside the Platform</span>
         <h1 class="hero-headline mt-2 mb-3">About <span class="accent">Dev Workbook</span></h1>
-        <p class="hero-body mx-auto">Empowering engineers to navigate onboarding gracefully, share authentic feedback, and establish healthy communication channels with their managers.</p>
+        <p class="hero-body">Empowering engineers to navigate onboarding gracefully, share authentic feedback, and establish healthy communication channels with their managers.</p>
     </div>
+</div>
 
+<div class="container py-5">
     <div class="row g-4 mb-5">
         <div class="col-md-6">
             <div class="dw-card p-4 h-100">
