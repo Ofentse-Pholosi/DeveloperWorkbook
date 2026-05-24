@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Workbook.Core.Entities;
 using Workbook.Infrastructure.Settings;
@@ -20,4 +20,6 @@ public class MongoDbContext
     public IMongoCollection<Users> Users => _database.GetCollection<Users>(_settings.UsersCollection);
 
     public IMongoCollection<WorkbookAnswer> WorkbookAnswers => _database.GetCollection<WorkbookAnswer>(_settings.WorkbookAnswersCollection);
+
+    public IMongoCollection<OtpRecord> Otps => _database.GetCollection<OtpRecord>(_settings.OtpsCollection);
 }

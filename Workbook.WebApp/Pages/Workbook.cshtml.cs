@@ -14,15 +14,21 @@ public class WorkbookModel : PageModel
     private readonly IWorkbookSectionProvider _sectionProvider;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly WorkbookAnswerRepository _workbookAnswerRepository;
+    private readonly IEmailService _emailService;
+    private readonly IUserRepository _userRepository;
 
     public WorkbookModel(
         IWorkbookSectionProvider sectionProvider,
-        IHttpContextAccessor httpContextAccessor, 
-        WorkbookAnswerRepository workbookAnswerRepository)
+        IHttpContextAccessor httpContextAccessor,
+        WorkbookAnswerRepository workbookAnswerRepository,
+        IEmailService emailService,
+        IUserRepository userRepository)
     {
         _sectionProvider = sectionProvider;
         _httpContextAccessor = httpContextAccessor;
         _workbookAnswerRepository = workbookAnswerRepository;
+        _emailService = emailService;
+        _userRepository = userRepository;
     }
 
     public List<WorkbookSection> WorkbookSections { get; set; } = new();
@@ -72,6 +78,18 @@ public class WorkbookModel : PageModel
         }
 
         await _workbookAnswerRepository.SaveWorkbookAnswerAsync(workbookAnswer);
+
+        // Notify the manager when a section is submitted for review
+        if (action == "Submit")
+        {
+            var devUser = await _userRepository.GetUserEmailAsync(email);
+            if (devUser != null && !string.IsNullOrEmpty(devUser.TeamLeadEmail))
+            {
+                var developerName = $"{devUser.FirstName} {devUser.LastName}".Trim();
+                await _emailService.SendFeedbackNotificationAsync(
+                    devUser.TeamLeadEmail, developerName, sectionTitle);
+            }
+        }
 
         return RedirectToPage();
     }
