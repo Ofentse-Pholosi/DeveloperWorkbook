@@ -1,68 +1,144 @@
-﻿@page
+@page
 @model Workbook.WebApp.Pages.Auth.RegisterModel
 @{
-}
-@{
+    ViewData["Title"] = "Create account";
     Layout = "~/Pages/Shared/_Layout.cshtml";
 }
 
-<div class="container border rounded p-4 mt-4 shadow-sm">
-    <h2 class="text-center">New Developer Workbook Registration</h2>
-    <p class="text-center">Please enter your developer information as required:</p>
-    <form method="post">
-        <div class="mb-3">
-            <label for="firstName" class="form-label">Full Name:</label>
-            <input asp-for="Input.FirstName" class="form-control" id="firstName" placeholder="Enter your full name" required />
-        </div>
-        <div class="mb-3">
-            <label for="lastName" class="form-label">Last Name:</label>
-            <input asp-for="Input.LastName" class="form-control" id="lastName" placeholder="Enter your last name" required />
-        </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">Email:</label>
-            <input asp-for="Input.Email" class="form-control" id="email" type="email" placeholder="Enter your email" required />
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Password:</label>
-            <input asp-for="Input.Password" class="form-control" id="password" type="password" placeholder="Enter your password" required />
-        </div>
-        <div class="mb-3">
-            <label for="teamLeadEmail" class="form-label">Team Lead Email:</label>
-            <input asp-for="Input.TeamLeadEmail" class="form-control" id="teamLeadEmail" type="email" placeholder="Enter your team lead's email" />
-        </div>
-        <div class="mb-3">
-            <label for="positionName" class="form-label">Position Name:</label>
-            <input asp-for="Input.PositionName" class="form-control" id="positionName" placeholder="Enter your position name" />
-        </div>
-        <div class="mb-3">
-            <label for="teamName" class="form-label">Team Name:</label>
-            <input asp-for="Input.TeamName" class="form-control" id="teamName" placeholder="Enter your team name" />
-        </div>
-        <div class="mb-3">
-            <label for="companyName" class="form-label">Company Name:</label>
-            <input asp-for="Input.CompanyName" class="form-control" id="companyName" placeholder="Enter your company name" />
-        </div>
-        <div class="mb-3">
-            <label for="divisionName" class="form-label">Division Name:</label>
-            <input asp-for="Input.DivisionName" class="form-control" id="divisionName" placeholder="Enter your division name" />
-        </div>
-        <div class="mb-3">
-            <label for="dateJoinedTeam" class="form-label">Date Joined Team:</label>
-            <input asp-for="Input.DateJoinedTeam" class="form-control" id="dateJoinedTeam" type="date" />
-        </div>
+<div class="auth-shell">
 
-        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
-        {
-            <div class="alert alert-danger" role="alert">
-                @Model.ErrorMessage
+    <!-- ── Left: Brand panel ── -->
+    <div class="auth-panel-brand">
+        <p class="auth-brand-eyebrow">Get started</p>
+        <h1 class="auth-brand-headline">
+            Start your<br><span>onboarding</span><br>journey.
+        </h1>
+        <p class="auth-brand-body">
+            Create your developer profile. Once set up, your team lead will be notified
+            when you submit each section — giving them the context to support you effectively.
+        </p>
+        <ul class="auth-feature-list">
+            <li>
+                <span class="feat-icon"><i class="fas fa-user-check"></i></span>
+                Profile tied to your team and division
+            </li>
+            <li>
+                <span class="feat-icon"><i class="fas fa-bell"></i></span>
+                Manager notified on every submission
+            </li>
+            <li>
+                <span class="feat-icon"><i class="fas fa-shield-alt"></i></span>
+                Secure cookie authentication — no tokens stored
+            </li>
+        </ul>
+    </div>
+
+    <!-- ── Right: Form panel ── -->
+    <div class="auth-panel-form" style="justify-content:flex-start; padding-top:2.5rem; padding-bottom:2.5rem; overflow-y:auto;">
+        <div class="auth-form-box" style="max-width:480px;">
+            <h2 class="auth-form-title">Create your account</h2>
+            <p class="auth-form-subtitle">Fill in your developer profile to get started.</p>
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="dw-alert-error">
+                    <i class="fas fa-exclamation-circle" style="margin-top:1px;flex-shrink:0"></i>
+                    @Model.ErrorMessage
+                </div>
+            }
+
+            <form method="post">
+
+                <!-- Identity -->
+                <p class="form-section-label">Identity</p>
+
+                <div class="dw-field-grid">
+                    <div class="dw-field">
+                        <label for="firstName">First name</label>
+                        <input asp-for="Input.FirstName" id="firstName"
+                               class="dw-input form-control" placeholder="Naledi" required />
+                    </div>
+                    <div class="dw-field">
+                        <label for="lastName">Last name</label>
+                        <input asp-for="Input.LastName" id="lastName"
+                               class="dw-input form-control" placeholder="Dlamini" required />
+                    </div>
+                </div>
+
+                <div class="dw-field">
+                    <label for="email">Email address</label>
+                    <div class="dw-input-group">
+                        <i class="fas fa-envelope dw-input-icon"></i>
+                        <input asp-for="Input.Email" id="email" type="email"
+                               class="dw-input form-control" placeholder="naledi@company.com" required />
+                    </div>
+                </div>
+
+                <div class="dw-field">
+                    <label for="password">Password</label>
+                    <div class="dw-input-group">
+                        <i class="fas fa-lock dw-input-icon"></i>
+                        <input asp-for="Input.Password" id="password" type="password"
+                               class="dw-input form-control" placeholder="Choose a strong password" required />
+                    </div>
+                </div>
+
+                <!-- Team context -->
+                <p class="form-section-label">Team context</p>
+
+                <div class="dw-field">
+                    <label for="teamLeadEmail">Team lead email</label>
+                    <div class="dw-input-group">
+                        <i class="fas fa-user-tie dw-input-icon"></i>
+                        <input asp-for="Input.TeamLeadEmail" id="teamLeadEmail" type="email"
+                               class="dw-input form-control" placeholder="lead@company.com" />
+                    </div>
+                </div>
+
+                <div class="dw-field-grid">
+                    <div class="dw-field">
+                        <label for="positionName">Role / Position</label>
+                        <input asp-for="Input.PositionName" id="positionName"
+                               class="dw-input form-control" placeholder="Junior Dev" />
+                    </div>
+                    <div class="dw-field">
+                        <label for="teamName">Team name</label>
+                        <input asp-for="Input.TeamName" id="teamName"
+                               class="dw-input form-control" placeholder="Platform Engineering" />
+                    </div>
+                </div>
+
+                <div class="dw-field-grid">
+                    <div class="dw-field">
+                        <label for="companyName">Company</label>
+                        <input asp-for="Input.CompanyName" id="companyName"
+                               class="dw-input form-control" placeholder="Acme Corp" />
+                    </div>
+                    <div class="dw-field">
+                        <label for="divisionName">Division</label>
+                        <input asp-for="Input.DivisionName" id="divisionName"
+                               class="dw-input form-control" placeholder="Engineering" />
+                    </div>
+                </div>
+
+                <div class="dw-field">
+                    <label for="dateJoinedTeam">Date joined team</label>
+                    <input asp-for="Input.DateJoinedTeam" id="dateJoinedTeam" type="date"
+                           class="dw-input form-control" />
+                </div>
+
+                <button type="submit" id="registerBtn" class="btn-dw-primary" style="margin-top:1rem;">
+                    <i class="fas fa-arrow-right"></i> Create account
+                </button>
+            </form>
+
+            <div style="margin-top:1.25rem; text-align:center;">
+                <span style="font-size:.82rem; color:var(--text-sub)">Already have an account?</span>
+                <a asp-page="/Auth/Login" style="font-size:.82rem; font-weight:600; margin-left:.3rem;">
+                    Sign in
+                </a>
             </div>
-        }
+        </div>
+    </div>
 
-        <div class="d-grid">
-            <button type="submit" class="btn btn-primary">Register</button>
-        </div>
-        <div class="text-center mt-3">
-            <p>Already have an account? <a asp-page="/Auth/Login">Login here</a>.</p>
-        </div>
-    </form>
 </div>

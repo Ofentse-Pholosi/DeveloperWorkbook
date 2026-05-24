@@ -11,10 +11,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.Configure<MongoDBSettings>(
     builder.Configuration.GetSection("MongoDbSettings"));
+builder.Services.Configure<SmtpSettings>(
+    builder.Configuration.GetSection("SmtpSettings"));
 
 builder.Services.AddSingleton<MongoDbContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IOtpRepository, OtpRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IWorkbookSectionProvider, WorkbookSectionProvider>();
 builder.Services.AddScoped<WorkbookAnswerRepository>();
 builder.Services.AddHttpContextAccessor();

@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using System.Text;
 using Workbook.Application.Interfaces;
 using Workbook.Core.Entities;
@@ -8,10 +8,15 @@ namespace Workbook.Infrastructure.Services;
 public sealed class AuthService : IAuthService
 {
     private readonly IUserRepository _userRepository;
-    public AuthService(IUserRepository userRepository)
+    private readonly IOtpRepository _otpRepository;
+
+    public AuthService(IUserRepository userRepository, IOtpRepository otpRepository)
     {
         _userRepository = userRepository;
+        _otpRepository = otpRepository;
     }
+
+    // ── Standard registration ──────────────────────────────────────────────
     public async Task<bool> RegisterAsync(Users devUser, string password)
     {
         var existingUser = await _userRepository.GetUserEmailAsync(devUser.Email);
@@ -34,6 +39,8 @@ public sealed class AuthService : IAuthService
         await _userRepository.CreateAsync(newUser);
         return true;
     }
+
+    // ── Standard login validation ──────────────────────────────────────────
     public async Task<Users?> ValidateUserAsync(string email, string password)
     {
         var user = await _userRepository.GetUserEmailAsync(email);
@@ -43,20 +50,60 @@ public sealed class AuthService : IAuthService
         }
         return user;
     }
-    private string HashPassword(string password)
+
+    // ── Manager check ──────────────────────────────────────────────────────
+    public async Task<bool> IsManagerAsync(string email)
+    {
+        var reports = await _userRepository.GetUsersByTeamLeadEmailAsync(email);
+        return reports.Any();
+    }
+
+    // ── OTP generation ─────────────────────────────────────────────────────
+    public async Task<string> GenerateOtpAsync(string email)
+    {
+        // Generate a cryptographically random 6-digit code
+        var code = RandomNumberGenerator.GetInt32(100_000, 999_999).ToString();
+
+        var record = new OtpRecord
+        {
+            Email = email,
+            CodeHash = HashPassword(code),           // reuse same SHA-256 helper
+            ExpiresAt = DateTime.UtcNow.AddMinutes(10),
+            IsUsed = false,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        await _otpRepository.SaveOtpAsync(record);
+        return code; // return plain-text so caller can email it
+    }
+
+    // ── OTP validation ─────────────────────────────────────────────────────
+    public async Task<bool> ValidateOtpAsync(string email, string code)
+    {
+        var record = await _otpRepository.GetLatestOtpAsync(email);
+        if (record == null)
+            return false;
+
+        var inputHash = HashPassword(code);
+        if (!string.Equals(record.CodeHash, inputHash, StringComparison.Ordinal))
+            return false;
+
+        // Mark as used to prevent replay attacks
+        await _otpRepository.MarkOtpUsedAsync(record.Id);
+        return true;
+    }
+
+    // ── Private helpers ───────────────────────── ───────────────────────────
+    private static string HashPassword(string input)
     {
         using var sha256 = SHA256.Create();
-        var bytes = Encoding.UTF8.GetBytes(password);
+        var bytes = Encoding.UTF8.GetBytes(input);
         var hash = sha256.ComputeHash(bytes);
         return Convert.ToBase64String(hash);
     }
-    private bool VerifyPassword(string password, string hashedPassword)
-    {
-        using var sha256 = SHA256.Create();
-        var bytes = Encoding.UTF8.GetBytes(password);
-        var hash = sha256.ComputeHash(bytes);
-        var inputHashedPassword = Convert.ToBase64String(hash);
 
-        return inputHashedPassword == hashedPassword;
+    private static bool VerifyPassword(string password, string hashedPassword)
+    {
+        return string.Equals(HashPassword(password), hashedPassword, StringComparison.Ordinal);
     }
 }

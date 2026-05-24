@@ -1,32 +1,76 @@
-﻿@page
+@page
 @model DashboardModel
 @{
     ViewData["Title"] = "Dashboard";
 }
 
-<div class="container mt-5">
-    <div class="text-center mb-5">
-        <h1 class="display-4">Hey @Model.FirstName @Model.LastName</h1>
-        <h1 class="display-4">Welcome to Your Workbook Dashboard</h1>
-        <p class="lead">Your personalized space for onboarding and growth.</p>
+<div class="container py-5">
+    <!-- Header -->
+    <div class="mb-5">
+        <span class="hero-eyebrow"><i class="fas fa-terminal me-1"></i> Developer Console</span>
+        <h1 class="hero-headline mt-2 mb-3">Welcome back, <span class="accent">@Model.FirstName</span></h1>
+        <p class="hero-body">Your personalized space for tracking onboarding progress, documenting feedback, and aligning goals.</p>
     </div>
-    <div class="row text-center">
-        <div class="col-md-4 mb-4">
-            <i class="fas fa-user fa-3x text-primary mb-3"></i>
-            <h3>Your Profile</h3>
-            <p>Manage your profile information.</p>
+
+    <!-- Bento Grid / Cards -->
+    <div class="row g-4">
+        <!-- Main Action: Workbook -->
+        <div class="col-md-8">
+            <div class="dw-card h-100 p-4 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="bento-icon mb-4">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3 class="h4 fw-bold mb-2" style="color: var(--text-primary)">Onboarding Workbook</h3>
+                    <p class="text-muted mb-4">Access your pre-programmed onboarding sections, record your achievements, self-reflect on your goals, and share progress with your lead.</p>
+                </div>
+                <div>
+                    <a asp-page="/Workbook" class="btn-hero-primary d-inline-flex">
+                        Open Workbook <i class="fas fa-chevron-right ms-2 small"></i>
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4 mb-4">
-            <a asp-page="/Workbook" class="text-decoration-none">
-                <i class="fas fa-rocket fa-3x text-warning mb-3"></i>
-                <h3>Get Started</h3>
-                <p>Explore your workbook available to you.</p>
-            </a>
+
+        <!-- Info Card: Profile Summary -->
+        <div class="col-md-4">
+            <div class="dw-card h-100 p-4 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="bento-icon mb-4">
+                        <i class="fas fa-id-badge"></i>
+                    </div>
+                    <h3 class="h4 fw-bold mb-2" style="color: var(--text-primary)">Developer Identity</h3>
+                    <p class="text-muted mb-0">Role: <strong style="color: var(--text-primary)">Software Engineer</strong></p>
+                    <p class="text-muted mb-0">Account: <strong style="color: var(--text-primary)">@User.Identity?.Name</strong></p>
+                </div>
+                <div class="mt-4 pt-3 border-top border-secondary border-opacity-10">
+                    <span class="dw-badge dw-badge-blue">Active Session</span>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4 mb-4">
-            <i class="fas fa-book fa-3x text-success mb-3"></i>
-            <h3>Add Your Own Resources</h3>
-            <p>Curate a list of your resources to enhance your skills.</p>
+
+        <!-- Secondary Card: Resource Hub -->
+        <div class="col-md-6">
+            <div class="dw-card p-4">
+                <div class="bento-icon mb-4">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+                <h3 class="h4 fw-bold mb-2" style="color: var(--text-primary)">Curate Resources</h3>
+                <p class="text-muted mb-4">Enhance your skillset by saving and sharing documentation, cheat sheets, and architecture diagrams with your team.</p>
+                <button class="btn-hero-ghost border-0 p-0 text-primary cursor-default" style="background:none;">Coming soon</button>
+            </div>
+        </div>
+
+        <!-- Secondary Card: Manager Alignment -->
+        <div class="col-md-6">
+            <div class="dw-card p-4">
+                <div class="bento-icon mb-4">
+                    <i class="fas fa-comment-dots"></i>
+                </div>
+                <h3 class="h4 fw-bold mb-2" style="color: var(--text-primary)">Manager Alignment</h3>
+                <p class="text-muted mb-4">Sync regularly. When you submit sections of your workbook, your manager is notified to review and provide structured feedback.</p>
+                <a href="/About" class="btn-hero-ghost" style="width: auto;">Learn how it works</a>
+            </div>
         </div>
     </div>
 </div>
