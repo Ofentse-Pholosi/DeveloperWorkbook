@@ -1,4 +1,3 @@
-@inject Workbook.Application.Interfaces.IUserRepository UserRepository
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,28 +30,26 @@
                     <ul class="navbar-nav flex-grow-1">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-page="/Dashboard">
-                                    <i class="fas fa-th-large me-1" style="font-size:.75rem"></i>Dashboard
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-page="/Workbook">
-                                    <i class="fas fa-book-open me-1" style="font-size:.75rem"></i>My Workbook
-                                </a>
-                            </li>
-                            var email = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
-                            if (!string.IsNullOrEmpty(email))
+                            @if (User.IsInRole("Manager"))
                             {
-                                var reports = await UserRepository.GetUsersByTeamLeadEmailAsync(email);
-                                if (reports.Any())
-                                {
-                                    <li class="nav-item">
-                                        <a class="nav-link" asp-area="" asp-page="/ManagerDashboard">
-                                            <i class="fas fa-users-cog me-1" style="font-size:.75rem"></i>Manager View
-                                        </a>
-                                    </li>
-                                }
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-page="/ManagerDashboard">
+                                        <i class="fas fa-users-cog me-1" style="font-size:.75rem"></i>Manager View
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-page="/Dashboard">
+                                        <i class="fas fa-th-large me-1" style="font-size:.75rem"></i>Dashboard
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-page="/Workbook">
+                                        <i class="fas fa-book-open me-1" style="font-size:.75rem"></i>My Workbook
+                                    </a>
+                                </li>
                             }
                         }
                         else
