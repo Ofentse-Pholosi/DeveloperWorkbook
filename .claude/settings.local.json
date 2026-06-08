@@ -13,7 +13,13 @@
       "Bash(dotnet run *)",
       "PowerShell(Stop-Process -Id 32044, 33052 -Force -ErrorAction SilentlyContinue)",
       "PowerShell(Start-Process -FilePath \"dotnet\" -ArgumentList \"run --project Workbook.WebApp/Workbook.WebApp.csproj --launch-profile http\" -WorkingDirectory \"C:\\\\Projects\\\\DeveloperWorkbook\" -WindowStyle Hidden)",
-      "Bash(xargs grep *)"
+      "Bash(xargs grep *)",
+      "Read(//c/Users/User/AppData/Local/Temp/claude/screenshots/**)",
+      "Bash(curl -s -o /dev/null -w \"QuarterlyReview redirect: %{http_code} -> %{redirect_url}\\\\n\" http://localhost:5043/QuarterlyReview)",
+      "Bash(curl -s -o /dev/null -w \"ManagerPerformanceReview redirect: %{http_code} -> %{redirect_url}\\\\n\" \"http://localhost:5043/ManagerPerformanceReview?email=test@test.com&quarter=2&year=2026\")",
+      "Bash(grep -E \"\\\\[DEV\\\\]|OTP|smtp|Email delivery|warn.*icloud|SMTP\" /tmp/server.log | tail -20)",
+      "Read(//tmp/**)",
+      "Bash(grep -E \"\\\\[DEV\\\\]|Email delivery failed|Email sent|smtp|warn.*icloud|error\" /tmp/server.log | tail -10)"
     ]
   }
 }

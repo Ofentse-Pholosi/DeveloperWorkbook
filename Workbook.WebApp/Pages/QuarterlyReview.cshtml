@@ -1,0 +1,234 @@
+@page
+@model QuarterlyReviewModel
+@{
+    ViewData["Title"] = $"Q{Model.Quarter} {Model.Year} Review";
+    var status = Model.ExistingReview?.Status ?? "Draft";
+}
+
+<div class="container py-5 animate-fade-in">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-5">
+        <div>
+            <span class="hero-eyebrow"><i class="fas fa-chart-line me-1"></i> Performance Review</span>
+            <h1 class="hero-headline mt-2 mb-1">Q@(Model.Quarter) @Model.Year — Self-Assessment</h1>
+            <p class="hero-body mb-0">Rate each area honestly. This is a structured conversation starter, not a judgement.</p>
+        </div>
+        <div class="d-flex align-items-center gap-3 pt-1">
+            @if (status == "Reviewed")
+            {
+                <span class="dw-badge dw-badge-green"><i class="fas fa-check-circle me-1"></i> Reviewed</span>
+            }
+            else if (status == "Submitted")
+            {
+                <span class="dw-badge dw-badge-amber"><i class="fas fa-hourglass-half me-1"></i> Awaiting Review</span>
+            }
+            else
+            {
+                <span class="dw-badge dw-badge-neutral">Draft</span>
+            }
+        </div>
+    </div>
+
+    <!-- Manager Assessment (shown when review is complete) -->
+    @if (Model.ExistingReview?.ManagerAssessment != null && status == "Reviewed")
+    {
+        var ma = Model.ExistingReview.ManagerAssessment;
+        var trajLabel = ma.PerformanceTrajectory switch
+        {
+            "ExceedingExpectations" => "Exceeding Expectations",
+            "NeedsSupport" => "Needs Support",
+            _ => "On Track"
+        };
+        var trajBadge = ma.PerformanceTrajectory switch
+        {
+            "ExceedingExpectations" => "dw-badge-green",
+            "NeedsSupport" => "dw-badge-amber",
+            _ => "dw-badge-blue"
+        };
+
+        <div class="dw-card p-4 mb-5">
+            <div class="d-flex align-items-center gap-2 mb-4">
+                <i class="fas fa-user-shield accent"></i>
+                <h3 class="h5 fw-bold mb-0" style="color: var(--text-primary)">Manager Assessment</h3>
+                @if (Model.ExistingReview.ReviewedAt.HasValue)
+                {
+                    <span class="text-muted small ms-auto">@Model.ExistingReview.ReviewedAt.Value.ToString("dd MMM yyyy")</span>
+                }
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-sm-6">
+                    <div class="text-muted small mb-2">Overall Rating</div>
+                    <div class="d-flex gap-1">
+                        @for (int s = 1; s <= 5; s++)
+                        {
+                            <span class="badge @(s <= ma.OverallRating ? "bg-warning text-dark" : "bg-secondary bg-opacity-25 text-muted")" style="font-size:0.8rem; padding:0.4em 0.6em;">@s</span>
+                        }
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-muted small mb-2">Performance Trajectory</div>
+                    <span class="dw-badge @trajBadge">@trajLabel</span>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(ma.Strengths))
+            {
+                <div class="mb-3 p-3 rounded-2" style="background:var(--bg-raised); border:1px solid var(--border)">
+                    <div class="fw-semibold text-muted small mb-1">Strengths</div>
+                    <p class="mb-0" style="white-space:pre-wrap; font-size:0.92rem; color:var(--text-primary)">@ma.Strengths</p>
+                </div>
+            }
+            @if (!string.IsNullOrWhiteSpace(ma.ImprovementAreas))
+            {
+                <div class="mb-3 p-3 rounded-2" style="background:var(--bg-raised); border:1px solid var(--border)">
+                    <div class="fw-semibold text-muted small mb-1">Areas for Improvement</div>
+                    <p class="mb-0" style="white-space:pre-wrap; font-size:0.92rem; color:var(--text-primary)">@ma.ImprovementAreas</p>
+                </div>
+            }
+            @if (!string.IsNullOrWhiteSpace(ma.NextQuarterGoals))
+            {
+                <div class="mb-3 p-3 rounded-2" style="background:var(--bg-raised); border:1px solid var(--border)">
+                    <div class="fw-semibold text-muted small mb-1">Goals for Next Quarter (set by manager)</div>
+                    <p class="mb-0" style="white-space:pre-wrap; font-size:0.92rem; color:var(--text-primary)">@ma.NextQuarterGoals</p>
+                </div>
+            }
+            @if (!string.IsNullOrWhiteSpace(ma.AdditionalFeedback))
+            {
+                <div class="p-3 rounded-2" style="background:var(--bg-raised); border:1px solid var(--border)">
+                    <div class="fw-semibold text-muted small mb-1">Additional Feedback</div>
+                    <p class="mb-0" style="white-space:pre-wrap; font-size:0.92rem; color:var(--text-primary)">@ma.AdditionalFeedback</p>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- Rating legend -->
+    @if (!Model.IsLocked)
+    {
+        <div class="mb-4 p-3 rounded-2 d-flex flex-wrap gap-3 small text-muted" style="background:var(--bg-raised); border:1px solid var(--border)">
+            <span class="fw-semibold" style="color:var(--text-primary)"><i class="fas fa-info-circle me-1 accent"></i> Rating scale:</span>
+            <span><strong style="color:var(--text-primary)">1</strong> — Needs improvement</span>
+            <span><strong style="color:var(--text-primary)">2</strong> — Below expectations</span>
+            <span><strong style="color:var(--text-primary)">3</strong> — Meets expectations</span>
+            <span><strong style="color:var(--text-primary)">4</strong> — Exceeds expectations</span>
+            <span><strong style="color:var(--text-primary)">5</strong> — Exceptional</span>
+        </div>
+    }
+
+    <!-- Self-assessment form -->
+    <form method="post">
+        <input type="hidden" name="quarter" value="@Model.Quarter" />
+        <input type="hidden" name="year" value="@Model.Year" />
+
+        <div class="accordion" id="reviewAccordion">
+            @for (int i = 0; i < Model.SectionConfigs.Count; i++)
+            {
+                var config = Model.SectionConfigs[i];
+                var sectionId = $"section{i}";
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading-@sectionId">
+                        <button class="accordion-button @(i > 0 ? "collapsed" : "")" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#collapse-@sectionId"
+                                aria-expanded="@(i == 0 ? "true" : "false")">
+                            <span class="me-auto">@config.Category</span>
+                            @if (config.FreeTextOnly)
+                            {
+                                <span class="dw-badge dw-badge-blue me-3">Goals</span>
+                            }
+                        </button>
+                    </h2>
+                    <div id="collapse-@sectionId" class="accordion-collapse collapse @(i == 0 ? "show" : "")"
+                         aria-labelledby="heading-@sectionId">
+                        <div class="accordion-body">
+
+                            @for (int j = 0; j < config.Items.Count; j++)
+                            {
+                                var item = config.Items[j];
+                                var existingRating = Model.GetExistingRating(i, j);
+                                var existingNotes = Model.GetExistingNotes(i, j);
+
+                                <div class="mb-4 p-3 rounded-2" style="background:var(--bg-raised); border:1px solid var(--border)">
+                                    <div class="fw-semibold mb-2" style="color:var(--text-primary); font-size:0.92rem;">@item</div>
+
+                                    @if (!config.FreeTextOnly)
+                                    {
+                                        <div class="d-flex gap-1 flex-wrap mb-3">
+                                            @for (int star = 1; star <= 5; star++)
+                                            {
+                                                var radioId = $"r_{i}_{j}_{star}";
+                                                <input type="radio" class="btn-check"
+                                                       name="sectionItems[@(i)_@(j)]"
+                                                       id="@radioId"
+                                                       value="@star"
+                                                       @(existingRating == star ? "checked" : string.Empty)
+                                                       @(Model.IsLocked ? "disabled" : string.Empty) />
+                                                <label class="btn btn-sm btn-outline-secondary" for="@radioId"
+                                                       style="min-width:2.4rem; font-weight:600;">@star</label>
+                                            }
+                                            @if (existingRating == 0 && !Model.IsLocked)
+                                            {
+                                                <span class="text-muted small align-self-center ms-1 fst-italic">Not rated yet</span>
+                                            }
+                                        </div>
+                                    }
+
+                                    <textarea class="dw-input"
+                                              name="sectionNotes[@(i)_@(j)]"
+                                              rows="2"
+                                              placeholder="@(config.FreeTextOnly ? "Your answer..." : "Context or notes (optional)...")"
+                                              @(Model.IsLocked ? "disabled" : string.Empty)>@existingNotes</textarea>
+                                </div>
+                            }
+
+                            @if (!config.FreeTextOnly)
+                            {
+                                var existingGeneral = Model.GetExistingGeneralNotes(i);
+                                <div class="dw-field">
+                                    <label class="text-muted small">General notes for this category (optional)</label>
+                                    <textarea class="dw-input"
+                                              name="sectionGeneral[@i]"
+                                              rows="2"
+                                              placeholder="Any additional thoughts on @config.Category..."
+                                              @(Model.IsLocked ? "disabled" : string.Empty)>@existingGeneral</textarea>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (!Model.IsLocked)
+        {
+            <div class="d-flex justify-content-end gap-3 mt-4">
+                <button type="submit" name="action" value="Save" class="btn-hero-ghost" style="width:auto;">
+                    <i class="fas fa-save me-2"></i> Save Draft
+                </button>
+                <button type="submit" name="action" value="Submit" class="btn-hero-primary" style="width:auto;">
+                    <i class="fas fa-paper-plane me-2"></i> Submit to Manager
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="mt-4 p-3 rounded-2 text-center text-muted small"
+                 style="background:var(--bg-raised); border:1px dashed var(--border)">
+                @if (status == "Submitted")
+                {
+                    <i class="fas fa-hourglass-half me-2"></i>
+                    <span>Submitted and awaiting your manager's review.</span>
+                }
+                else
+                {
+                    <i class="fas fa-check-circle text-success me-2"></i>
+                    <span>This review has been completed. See your manager's assessment above.</span>
+                }
+            </div>
+        }
+    </form>
+
+</div>

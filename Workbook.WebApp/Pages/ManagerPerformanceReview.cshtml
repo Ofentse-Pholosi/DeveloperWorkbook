@@ -1,0 +1,223 @@
+@page
+@model ManagerPerformanceReviewModel
+@{
+    ViewData["Title"] = $"Q{Model.Quarter} {Model.Year} — {Model.Developer?.FirstName} {Model.Developer?.LastName}";
+    var review = Model.Review;
+    var alreadyReviewed = review?.Status == "Reviewed";
+    var ma = review?.ManagerAssessment;
+}
+
+<div class="container py-5">
+
+    <!-- Back -->
+    <div class="mb-4">
+        <a asp-page="/ManagerDashboard" class="btn-hero-ghost" style="width:auto; padding:0.5rem 1.1rem; font-size:0.8rem;">
+            <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Developer Profile Header -->
+    <div class="dw-card p-4 mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="avatar-circle" style="width:56px; height:56px; font-size:1.1rem; flex-shrink:0;">
+                    @Model.Developer!.FirstName[0]@Model.Developer.LastName[0]
+                </div>
+                <div>
+                    <h1 class="h4 fw-bold mb-1" style="color:var(--text-primary)">
+                        @Model.Developer.FirstName @Model.Developer.LastName
+                    </h1>
+                    <p class="mb-0 text-muted d-flex align-items-center gap-2 flex-wrap small">
+                        <span class="dw-badge dw-badge-blue">@Model.Developer.DevPosition</span>
+                        <span>@Model.Developer.TeamName · @Model.Developer.CompanyName</span>
+                    </p>
+                </div>
+            </div>
+            <div class="text-end">
+                <div class="fw-bold font-mono" style="color:var(--text-primary); font-size:1.1rem;">Q@(Model.Quarter) @Model.Year</div>
+                @if (alreadyReviewed)
+                {
+                    <span class="dw-badge dw-badge-green mt-1"><i class="fas fa-check-circle me-1"></i> Reviewed</span>
+                }
+                else if (review?.Status == "Submitted")
+                {
+                    <span class="dw-badge dw-badge-amber mt-1">Submitted — Awaiting Review</span>
+                }
+                else if (review?.Status == "Draft")
+                {
+                    <span class="dw-badge dw-badge-neutral mt-1">Developer Draft in Progress</span>
+                }
+                else
+                {
+                    <span class="dw-badge dw-badge-neutral mt-1">Not Started</span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Self-Assessment (read-only) -->
+    @if (review != null && review.SelfAssessment.Any())
+    {
+        <h2 class="h5 fw-bold mb-3" style="color:var(--text-primary)">
+            <i class="fas fa-user me-2 accent"></i>Developer Self-Assessment
+        </h2>
+        <div class="accordion mb-5" id="selfAssessmentAccordion">
+            @foreach (var reviewSection in review.SelfAssessment)
+            {
+                var sectionId = reviewSection.Category.Replace(" ", "").Replace("&", "");
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="sa-heading-@sectionId">
+                        <button class="accordion-button collapsed" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#sa-collapse-@sectionId"
+                                aria-expanded="false">
+                            @reviewSection.Category
+                        </button>
+                    </h2>
+                    <div id="sa-collapse-@sectionId" class="accordion-collapse collapse"
+                         aria-labelledby="sa-heading-@sectionId" data-bs-parent="#selfAssessmentAccordion">
+                        <div class="accordion-body">
+                            @foreach (var ratedItem in reviewSection.Items)
+                            {
+                                <div class="mb-3 p-3 rounded-2" style="background:var(--bg-raised); border:1px solid var(--border)">
+                                    <div class="fw-semibold text-muted small mb-2">@ratedItem.Label</div>
+                                    @if (ratedItem.Rating > 0)
+                                    {
+                                        <div class="d-flex gap-1 mb-2">
+                                            @for (int s = 1; s <= 5; s++)
+                                            {
+                                                <span class="badge @(s <= ratedItem.Rating ? "bg-warning text-dark" : "bg-secondary bg-opacity-25 text-muted")"
+                                                      style="font-size:0.75rem; padding:0.35em 0.55em;">@s</span>
+                                            }
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(ratedItem.Notes))
+                                    {
+                                        <p class="mb-0 small" style="color:var(--text-primary); white-space:pre-wrap;">@ratedItem.Notes</p>
+                                    }
+                                    else if (ratedItem.Rating == 0)
+                                    {
+                                        <p class="mb-0 text-muted fst-italic small">Not answered</p>
+                                    }
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(reviewSection.GeneralNotes))
+                            {
+                                <div class="p-3 rounded-2 mt-2" style="background:var(--bg-raised); border:1px solid var(--border)">
+                                    <div class="fw-semibold text-muted small mb-1">General notes</div>
+                                    <p class="mb-0 small" style="color:var(--text-primary); white-space:pre-wrap;">@reviewSection.GeneralNotes</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="dw-card p-4 mb-5 text-center">
+            <div class="bento-icon mx-auto mb-3"><i class="fas fa-file-alt"></i></div>
+            <p class="text-muted mb-0">This developer has not submitted a self-assessment for Q@(Model.Quarter) @Model.Year yet.</p>
+            <p class="text-muted small mt-1">You can still record your manager assessment below — they will be able to fill in their side later.</p>
+        </div>
+    }
+
+    <!-- Manager Assessment Form -->
+    <h2 class="h5 fw-bold mb-3" style="color:var(--text-primary)">
+        <i class="fas fa-user-shield me-2 accent"></i>Manager Assessment
+    </h2>
+
+    <div class="dw-card p-4">
+        <form asp-page-handler="SubmitAssessment" method="post">
+            <input type="hidden" name="developerEmail" value="@Model.DeveloperEmail" />
+            <input type="hidden" name="quarter" value="@Model.Quarter" />
+            <input type="hidden" name="year" value="@Model.Year" />
+
+            <!-- Overall Rating -->
+            <div class="mb-4">
+                <label class="fw-semibold mb-2 d-block" style="color:var(--text-primary)">Overall Rating</label>
+                <div class="d-flex gap-2 flex-wrap">
+                    @for (int star = 1; star <= 5; star++)
+                    {
+                        var radioId = $"overall_{star}";
+                        var isChecked = ma?.OverallRating == star;
+                        <input type="radio" class="btn-check" name="overallRating" id="@radioId" value="@star"
+                               @(isChecked ? "checked" : string.Empty) />
+                        <label class="btn btn-outline-secondary" for="@radioId"
+                               style="min-width:3rem; font-weight:700;">@star</label>
+                    }
+                    <span class="text-muted small align-self-center ms-2">
+                        1 = Needs improvement &nbsp;·&nbsp; 5 = Exceptional
+                    </span>
+                </div>
+            </div>
+
+            <!-- Performance Trajectory -->
+            <div class="mb-4">
+                <label class="fw-semibold mb-2 d-block" style="color:var(--text-primary)">Performance Trajectory</label>
+                <div class="d-flex gap-2 flex-wrap">
+                    @{
+                        var trajectoryOptions = new[] {
+                            ("OnTrack", "On Track"),
+                            ("NeedsSupport", "Needs Support"),
+                            ("ExceedingExpectations", "Exceeding Expectations")
+                        };
+                    }
+                    @foreach (var (value, label) in trajectoryOptions)
+                    {
+                        var trajId = $"traj_{value}";
+                        var isChecked = ma?.PerformanceTrajectory == value;
+                        <input type="radio" class="btn-check" name="performanceTrajectory" id="@trajId" value="@value"
+                               @(isChecked ? "checked" : string.Empty) />
+                        <label class="btn btn-outline-secondary" for="@trajId">@label</label>
+                    }
+                </div>
+            </div>
+
+            <!-- Strengths -->
+            <div class="dw-field mb-4">
+                <label>Strengths</label>
+                <textarea class="dw-input" name="strengths" rows="3"
+                          placeholder="What did this developer do particularly well this quarter?">@(ma?.Strengths ?? string.Empty)</textarea>
+            </div>
+
+            <!-- Areas for Improvement -->
+            <div class="dw-field mb-4">
+                <label>Areas for Improvement</label>
+                <textarea class="dw-input" name="improvementAreas" rows="3"
+                          placeholder="What specific areas should this developer focus on improving?">@(ma?.ImprovementAreas ?? string.Empty)</textarea>
+            </div>
+
+            <!-- Next Quarter Goals -->
+            <div class="dw-field mb-4">
+                <label>Goals for Next Quarter</label>
+                <textarea class="dw-input" name="nextQuarterGoals" rows="3"
+                          placeholder="Set 2–3 concrete goals for the next quarter...">@(ma?.NextQuarterGoals ?? string.Empty)</textarea>
+            </div>
+
+            <!-- Additional Feedback -->
+            <div class="dw-field mb-4">
+                <label>Additional Feedback <span class="text-muted small">(optional)</span></label>
+                <textarea class="dw-input" name="additionalFeedback" rows="2"
+                          placeholder="Any other notes or context for the developer...">@(ma?.AdditionalFeedback ?? string.Empty)</textarea>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 pt-3 border-top border-secondary border-opacity-10">
+                <div>
+                    @if (alreadyReviewed && review!.ReviewedAt.HasValue)
+                    {
+                        <span class="text-muted small">
+                            <i class="fas fa-check-circle text-success me-1"></i>
+                            Last submitted: @review.ReviewedAt.Value.ToString("dd MMM yyyy, HH:mm") UTC
+                        </span>
+                    }
+                </div>
+                <button type="submit" class="btn-dw-success">
+                    <i class="fas fa-check me-2"></i>
+                    @(alreadyReviewed ? "Update Assessment" : "Submit Assessment")
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>

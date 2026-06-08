@@ -20,6 +20,8 @@ builder.Services.AddScoped<IOtpRepository, OtpRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IWorkbookSectionProvider, WorkbookSectionProvider>();
+builder.Services.AddScoped<IPerformanceReviewSectionProvider, PerformanceReviewSectionProvider>();
+builder.Services.AddScoped<IPerformanceReviewRepository, PerformanceReviewRepository>();
 builder.Services.AddScoped<WorkbookAnswerRepository>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddMediatR(cfg =>

@@ -1,0 +1,59 @@
+[
+  {
+    "category": "Deliverables & Output",
+    "items": [
+      "Goal completion from last quarter",
+      "Features / tickets delivered vs committed",
+      "Bug rate (defects introduced)",
+      "PR turnaround time"
+    ],
+    "freeTextOnly": false
+  },
+  {
+    "category": "Code Quality",
+    "items": [
+      "Code quality (self-rated)",
+      "Peer review participation",
+      "Adherence to team standards",
+      "Test coverage contribution"
+    ],
+    "freeTextOnly": false
+  },
+  {
+    "category": "Reliability & Professionalism",
+    "items": [
+      "Availability and responsiveness",
+      "Estimate accuracy",
+      "Scope adherence"
+    ],
+    "freeTextOnly": false
+  },
+  {
+    "category": "Collaboration & Communication",
+    "items": [
+      "Proactiveness in surfacing blockers",
+      "Knowledge sharing (docs, walkthroughs)",
+      "Standup / async communication quality",
+      "Pair programming participation"
+    ],
+    "freeTextOnly": false
+  },
+  {
+    "category": "Learning & Growth",
+    "items": [
+      "Skills acquired this quarter",
+      "Courses / certifications completed",
+      "Areas of noticeable improvement"
+    ],
+    "freeTextOnly": false
+  },
+  {
+    "category": "Goals for Next Quarter",
+    "items": [
+      "2–3 concrete goals for next quarter",
+      "Skills to develop",
+      "What support do you need from your manager?"
+    ],
+    "freeTextOnly": true
+  }
+]

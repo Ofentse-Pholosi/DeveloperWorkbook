@@ -1,6 +1,6 @@
 # Dev Onboarding Workbook 
 
-This is a modern ASP.NET Core Web App designed to facilitate a **continuous feedback loop** between managers (team leads) and new developers during their onboarding journey. Built using Clean Architecture principles, MediatR, and MongoDB, it provides a structured, responsive, and persistent space to document progress and receive mentor feedback.
+This is a modern ASP.NET Core Web App designed to facilitate a **continuous feedback loop** between managers (team leads) and developers — from their first days onboarding all the way through recurring quarterly performance reviews. Built using Clean Architecture principles, MediatR, and MongoDB, it provides a structured, responsive, and persistent space to document progress, reflect on growth, and exchange structured feedback.
 
 **Live Demo**: [developerworkbook-e3fza9e2hth7agd3.southafricanorth-01.azurewebsites.net](https://developerworkbook-e3fza9e2hth7agd3.southafricanorth-01.azurewebsites.net/)
 
@@ -12,18 +12,31 @@ This project is fully open source! We encourage the developer community to custo
 
 To get started with custom development:
 1. **Fork this repository** to your own GitHub account.
-2. Customize the default sections and questions by modifying the JSON configuration in [workbookSections.json](file:///c:/Projects/DeveloperWorkbook/Workbook.WebApp/workbookSections.json).
-3. Push changes and build custom features to adapt the interface to your desire.
+2. Customize onboarding sections and questions in [workbookSections.json](Workbook.WebApp/workbookSections.json).
+3. Customize quarterly review categories and rated metrics in [performanceReviewSections.json](Workbook.WebApp/performanceReviewSections.json).
+4. Push changes and build custom features to adapt the interface to your organisation's needs.
 
 ---
 
 ## Features
 
-* **Developer Workbook**: A structured reflection workspace broken down into sections (e.g. Getting Started, Learning by Doing, Progress Tracker).
-* **Draft & Submission States**: Developers can save incremental drafts of their answers, or submit them directly to their manager for review.
-* **Autosave / Upsert Mode**: Safe, collision-free database persistence in MongoDB that replaces old versions without creating duplicates.
-* **Manager Review Portal**: An interactive dashboard showing a list of direct reports, progress percentages, and detailed section-by-section review and feedback comment inputs.
-* **Secure Cookies Authentication**: Secure authentication pipeline redirecting users straight to their dashboards.
+### Onboarding Workbook
+* **Developer Workbook**: A structured reflection workspace broken down into configurable sections (Getting Started, Learning by Doing, Skills & Progress Tracker, and more).
+* **Draft & Submission States**: Developers save incremental drafts and submit sections to their manager when ready.
+* **Autosave / Upsert Mode**: Collision-free MongoDB persistence that replaces old versions without creating duplicates.
+* **Manager Review Portal**: An interactive dashboard showing direct reports, onboarding progress percentages, and a section-by-section feedback interface.
+
+### Quarterly Performance Reviews
+* **Self-Assessment Form**: Developers rate themselves across six categories — Deliverables & Output, Code Quality, Reliability & Professionalism, Collaboration & Communication, Learning & Growth, and Goals for Next Quarter. Each rated item has a 1–5 score and a notes field.
+* **Manager Counter-Assessment**: After a developer submits, managers provide an independent overall rating, highlight strengths and improvement areas, set goals for the next quarter, and assign a performance trajectory (On Track / Needs Support / Exceeding Expectations).
+* **Quarter & Year Tracking**: Each review is keyed to a specific quarter (Q1–Q4) and year, building a historical record across quarters. The current quarter is auto-detected.
+* **Flexible Initiation**: Either party can create a review for a given quarter — developers self-assess first, or managers can initiate and fill their side before the developer completes theirs.
+* **Dashboard Integration**: The Manager Dashboard surfaces each direct report's current-quarter review status (Not Started / Draft / Submitted / Reviewed) alongside their onboarding progress.
+* **Configurable Metrics**: All review categories and rated items are defined in `performanceReviewSections.json` — no code changes needed to adjust what gets measured.
+
+### Platform
+* **Secure Authentication**: Cookie-based auth for developers (email + password) and OTP-based passwordless login for managers.
+* **Clean Architecture**: Domain, Application, Infrastructure, and Web layers with clear separation of concerns.
 
 ---
 
@@ -56,6 +69,35 @@ sequenceDiagram
 
 ---
 
+## Quarterly Review Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Dev as Developer
+    actor Mgr as Manager
+    participant DB as MongoDB
+
+    Note over Dev, Mgr: Either party can initiate a review for a given quarter
+
+    Dev->>DB: Opens Q Review (quarter/year auto-detected)
+    Dev->>DB: Rates self across 6 categories (1–5 per metric) + notes
+    Dev->>DB: Saves draft (Status: Draft)
+    Dev->>DB: Submits self-assessment (Status: Submitted)
+
+    Note over Mgr: Manager Dashboard shows "Submitted" badge for this developer
+
+    Mgr->>DB: Opens Manager Performance Review
+    Note right of Mgr: Sees developer's self-assessment (read-only)
+    Mgr->>DB: Submits counter-assessment — overall rating, strengths,<br/>improvement areas, next quarter goals, performance trajectory
+    DB-->>DB: Status → Reviewed, ReviewedAt = now
+
+    Note over Dev: Developer sees "Reviewed" badge on Q Review page
+    Dev->>DB: Views completed review — own scores + manager assessment side by side
+```
+
+---
+
 ## Tech Stack
 
 * **Core**: ASP.NET Core Razor Pages (net9.0)
@@ -70,10 +112,12 @@ sequenceDiagram
 
 ```plaintext
 DeveloperWorkbook
-├── Workbook.Core           # Core domain models (e.g. Users, WorkbookAnswer)
-├── Workbook.Application    # MediatR Commands, Handlers, Interfaces
-├── Workbook.Infrastructure # MongoDB implementations, Authentication services
-└── Workbook.WebApp         # Razor Pages, Web assets (css/js), and View Models
+├── Workbook.Core           # Domain models: Users, WorkbookAnswer, PerformanceReview, etc.
+├── Workbook.Application    # MediatR commands, handlers, and repository interfaces
+├── Workbook.Infrastructure # MongoDB repositories, authentication, and email services
+└── Workbook.WebApp         # Razor Pages, JSON config, web assets, and view models
+    ├── workbookSections.json           # Configurable onboarding sections & questions
+    └── performanceReviewSections.json  # Configurable quarterly review categories & metrics
 ```
 
 ---

@@ -85,7 +85,7 @@
 
                         <!-- Footer Actions & Badges -->
                         <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-secondary border-opacity-10">
-                            <div class="d-flex gap-2">
+                            <div class="d-flex gap-2 flex-wrap">
                                 @if (report.SubmittedSectionsCount > 0)
                                 {
                                     <span class="dw-badge dw-badge-amber">@report.SubmittedSectionsCount To Review</span>
@@ -101,6 +101,39 @@
                             </div>
                             <a asp-page="/ManagerReview" asp-route-email="@dev.Email" class="btn-hero-primary" style="width: auto; padding: 0.5rem 1.1rem; font-size: 0.8rem;">
                                 Review Workbook <i class="fas fa-chevron-right ms-2 small"></i>
+                            </a>
+                        </div>
+
+                        <!-- Q Review Status -->
+                        <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-secondary border-opacity-10">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="text-muted small"><i class="fas fa-chart-line me-1"></i> Q@(Model.CurrentQuarter) @Model.CurrentYear Review:</span>
+                                @{
+                                    var qStatus = report.CurrentQuarterReview?.Status;
+                                }
+                                @if (qStatus == "Reviewed")
+                                {
+                                    <span class="dw-badge dw-badge-green">Reviewed</span>
+                                }
+                                else if (qStatus == "Submitted")
+                                {
+                                    <span class="dw-badge dw-badge-amber">Submitted</span>
+                                }
+                                else if (qStatus == "Draft")
+                                {
+                                    <span class="dw-badge dw-badge-neutral">Draft</span>
+                                }
+                                else
+                                {
+                                    <span class="dw-badge dw-badge-neutral">Not Started</span>
+                                }
+                            </div>
+                            <a asp-page="/ManagerPerformanceReview"
+                               asp-route-email="@dev.Email"
+                               asp-route-quarter="@Model.CurrentQuarter"
+                               asp-route-year="@Model.CurrentYear"
+                               class="btn-hero-ghost" style="width:auto; padding:0.4rem 0.9rem; font-size:0.78rem;">
+                                Q Review <i class="fas fa-chevron-right ms-1 small"></i>
                             </a>
                         </div>
                     </div>

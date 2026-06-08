@@ -52,7 +52,10 @@ public class EmailService : IEmailService
 
     public async Task SendOtpEmailAsync(string managerEmail, string otpCode)
     {
-        var subject = "🔐 Your Dev Workbook Login Code";
+        // Visible in server console when SMTP is not configured (dev convenience)
+        _logger.LogWarning("[DEV] Manager OTP for {Email} → {Code}", managerEmail, otpCode);
+
+        var subject = "Your Dev Workbook Login Code";
         var body = $"""
             <html>
             <body style="font-family: 'Segoe UI', sans-serif; background: #f8f9fa; padding: 32px;">

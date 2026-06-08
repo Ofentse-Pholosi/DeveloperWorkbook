@@ -14,19 +14,24 @@ public class ManagerDashboardModel : PageModel
     private readonly IUserRepository _userRepository;
     private readonly WorkbookAnswerRepository _answerRepository;
     private readonly IWorkbookSectionProvider _sectionProvider;
+    private readonly IPerformanceReviewRepository _reviewRepository;
 
     public ManagerDashboardModel(
         IUserRepository userRepository,
         WorkbookAnswerRepository answerRepository,
-        IWorkbookSectionProvider sectionProvider)
+        IWorkbookSectionProvider sectionProvider,
+        IPerformanceReviewRepository reviewRepository)
     {
         _userRepository = userRepository;
         _answerRepository = answerRepository;
         _sectionProvider = sectionProvider;
+        _reviewRepository = reviewRepository;
     }
 
     public List<DeveloperProgressInfo> DirectReports { get; set; } = new();
     public int TotalSectionsCount { get; set; }
+    public int CurrentQuarter { get; set; }
+    public int CurrentYear { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -36,19 +41,25 @@ public class ManagerDashboardModel : PageModel
             return Unauthorized();
         }
 
+        var now = DateTime.UtcNow;
+        CurrentQuarter = (now.Month - 1) / 3 + 1;
+        CurrentYear = now.Year;
+
         var reports = await _userRepository.GetUsersByTeamLeadEmailAsync(email);
         TotalSectionsCount = (await _sectionProvider.GetSectionsAsync()).Count;
 
         foreach (var report in reports)
         {
             var answers = await _answerRepository.GetWorkbookAnswersByEmailAsync(report.Email);
+            var currentQReview = await _reviewRepository.GetByDeveloperQuarterAsync(report.Email, CurrentQuarter, CurrentYear);
 
             DirectReports.Add(new DeveloperProgressInfo
             {
                 Developer = report,
                 SavedSectionsCount = answers.Count,
                 SubmittedSectionsCount = answers.Count(a => a.Status == "Submitted"),
-                ReviewedSectionsCount = answers.Count(a => a.Status == "Reviewed")
+                ReviewedSectionsCount = answers.Count(a => a.Status == "Reviewed"),
+                CurrentQuarterReview = currentQReview
             });
         }
 
@@ -61,5 +72,6 @@ public class ManagerDashboardModel : PageModel
         public int SavedSectionsCount { get; set; }
         public int SubmittedSectionsCount { get; set; }
         public int ReviewedSectionsCount { get; set; }
+        public PerformanceReview? CurrentQuarterReview { get; set; }
     }
 }

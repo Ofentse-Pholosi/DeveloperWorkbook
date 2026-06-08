@@ -22,4 +22,6 @@ public class MongoDbContext
     public IMongoCollection<WorkbookAnswer> WorkbookAnswers => _database.GetCollection<WorkbookAnswer>(_settings.WorkbookAnswersCollection);
 
     public IMongoCollection<OtpRecord> Otps => _database.GetCollection<OtpRecord>(_settings.OtpsCollection);
+
+    public IMongoCollection<PerformanceReview> PerformanceReviews => _database.GetCollection<PerformanceReview>(_settings.PerformanceReviewsCollection);
 }
