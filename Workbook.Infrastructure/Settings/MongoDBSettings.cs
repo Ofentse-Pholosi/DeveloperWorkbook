@@ -7,4 +7,5 @@ public class MongoDBSettings
     public string UsersCollection { get; set; } = "Users";
     public string WorkbookAnswersCollection { get; set; } = "WorkbookAnswers";
     public string OtpsCollection { get; set; } = "Otps";
+    public string PerformanceReviewsCollection { get; set; } = "PerformanceReviews";
 }
