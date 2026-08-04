@@ -2,7 +2,7 @@
 
 This is a modern ASP.NET Core Web App designed to facilitate a **continuous feedback loop** between managers (team leads) and developers — from their first days onboarding all the way through recurring quarterly performance reviews. Built using Clean Architecture principles, MediatR, and MongoDB, it provides a structured, responsive, and persistent space to document progress, reflect on growth, and exchange structured feedback.
 
-**Live Demo**: [developerworkbook-e3fza9e2hth7agd3.southafricanorth-01.azurewebsites.net](https://developerworkbook-e3fza9e2hth7agd3.southafricanorth-01.azurewebsites.net/)
+**Live Demo**: Previously hosted on Azure App Service; redeploying to [Render](https://render.com) (link to follow).
 
 ---
 
@@ -168,3 +168,16 @@ To send OTP verification codes and manager alerts, configure an SMTP server (suc
    dotnet run --project Workbook.WebApp
    ```
 4. Open your browser and navigate to `http://localhost:5043` (or the HTTP port output in the terminal).
+
+---
+
+## Deployment (Render)
+
+The app is containerized (see [Dockerfile](Dockerfile)) and deployed to [Render](https://render.com) using the [render.yaml](render.yaml) Blueprint. MongoDB Atlas and SMTP are both external services, so no cloud-specific code is required — the same image can run on any container host.
+
+1. Push this repo to GitHub (or your fork) and log in to Render.
+2. **New > Blueprint**, point it at the repo — Render will read `render.yaml` and provision a free web service from the Dockerfile.
+3. Fill in the secret env vars flagged `sync: false` in `render.yaml` (`MongoDbSettings__ConnectionString`, `SmtpSettings__Host`, `SmtpSettings__Username`, `SmtpSettings__Password`, `SmtpSettings__FromAddress`) in the Render dashboard.
+4. Deploy. Render auto-builds and redeploys on every push to the connected branch — no GitHub Actions step is needed for deploy; [ci.yml](.github/workflows/ci.yml) just runs a build check on PRs.
+
+Note: Render's free tier spins the service down after 15 minutes of inactivity, so the first request after idling will be slow (cold start).

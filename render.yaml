@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: developer-workbook
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: MongoDbSettings__ConnectionString
+        sync: false
+      - key: MongoDbSettings__DatabaseName
+        value: DevsWorkbookDb
+      - key: MongoDbSettings__UsersCollection
+        value: Users
+      - key: SmtpSettings__Host
+        sync: false
+      - key: SmtpSettings__Port
+        value: "587"
+      - key: SmtpSettings__Username
+        sync: false
+      - key: SmtpSettings__Password
+        sync: false
+      - key: SmtpSettings__FromAddress
+        sync: false
+      - key: SmtpSettings__FromDisplayName
+        value: Dev Workbook
+      - key: SmtpSettings__EnableSsl
+        value: "true"
