@@ -1,8 +1,8 @@
-# Dev Onboarding Workbook 
+# Dev Workbook
 
-This is a modern ASP.NET Core Web App designed to facilitate a **continuous feedback loop** between managers (team leads) and developers — from their first days onboarding all the way through recurring quarterly performance reviews. Built using Clean Architecture principles, MediatR, and MongoDB, it provides a structured, responsive, and persistent space to document progress, reflect on growth, and exchange structured feedback.
+This is a modern ASP.NET Core Web App designed to facilitate a **continuous feedback loop** between developers — new hires, tenured engineers, or contractors between engagements — and whoever they report to. From first-day onboarding all the way through recurring quarterly performance reviews, it provides a structured, responsive, and persistent space to document progress, reflect on growth, and exchange structured feedback. Built using Clean Architecture principles, MediatR, and MongoDB.
 
-**Live Demo**: Previously hosted on Azure App Service; redeploying to [Render](https://render.com) (link to follow).
+**Live Demo**: [developerworkbook.onrender.com](https://developerworkbook.onrender.com/)
 
 ---
 
