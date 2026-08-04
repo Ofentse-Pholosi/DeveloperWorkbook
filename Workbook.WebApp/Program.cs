@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Workbook.Application.Interfaces;
 using Workbook.Application.Users.Commands.RegisterUser;
 using Workbook.Infrastructure.Data;
@@ -40,6 +41,17 @@ builder.Services.AddAuthentication("Cookies")
     });
 
 var app = builder.Build();
+
+// Render (and similar PaaS platforms) terminate TLS at an edge proxy whose IP isn't
+// known ahead of time, so trust its X-Forwarded-* headers to preserve HTTPS-only cookies
+// and avoid redirect loops.
+var forwardedHeadersOptions = new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+};
+forwardedHeadersOptions.KnownNetworks.Clear();
+forwardedHeadersOptions.KnownProxies.Clear();
+app.UseForwardedHeaders(forwardedHeadersOptions);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
