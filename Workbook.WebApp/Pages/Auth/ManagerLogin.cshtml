@@ -82,7 +82,14 @@
             }
             else
             {
-                <h2 class="auth-form-title">Check your email</h2>
+                <h2 class="auth-form-title">
+                    Check your email
+                    <i class="fas fa-circle-question"
+                       style="font-size:.72rem;color:var(--text-sub);cursor:help;margin-left:.4rem;vertical-align:middle;"
+                       data-bs-toggle="tooltip" data-bs-placement="top"
+                       title="Not seeing it? Check your Junk/Spam folder — first-time senders sometimes land there."
+                       tabindex="0"></i>
+                </h2>
                 <p class="auth-form-subtitle">
                     A 6-digit code was sent to
                     <strong style="color:var(--text-primary)">@(TempData.Peek("OtpEmail") ?? Model.Email)</strong>.
