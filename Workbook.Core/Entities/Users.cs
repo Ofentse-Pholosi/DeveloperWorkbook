@@ -11,6 +11,8 @@ public class Users
     public string Email { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
     public string PasswordHashConfirm { get; set; } = string.Empty;
+    /// <summary>0 = legacy unsalted SHA-256 (pre-migration), 1 = PBKDF2 via PasswordHasher&lt;T&gt;.</summary>
+    public int PasswordHashVersion { get; set; } = 0;
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string TeamLeadEmail { get; set; } = string.Empty;

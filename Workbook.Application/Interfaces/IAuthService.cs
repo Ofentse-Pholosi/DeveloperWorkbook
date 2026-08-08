@@ -6,6 +6,9 @@ public interface IAuthService
     Task<bool> RegisterAsync(Core.Entities.Users devUser, string password);
     Task<Core.Entities.Users?> ValidateUserAsync(string email, string password);
 
+    /// <summary>Hashes a new plain-text password using the current (strong) algorithm.</summary>
+    string HashPassword(string password);
+
     /// <summary>Returns true if the given email is the TeamLeadEmail for at least one developer.</summary>
     Task<bool> IsManagerAsync(string email);
 

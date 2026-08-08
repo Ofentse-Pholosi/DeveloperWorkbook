@@ -28,4 +28,13 @@ public class UserRepository : IUserRepository
     {
         return await _context.Users.Find(u => u.TeamLeadEmail == teamLeadEmail).ToListAsync();
     }
+
+    public async Task UpdatePasswordHashAsync(string userId, string newHash, int hashVersion)
+    {
+        var filter = Builders<Users>.Filter.Eq(u => u.Id, userId);
+        var update = Builders<Users>.Update
+            .Set(u => u.PasswordHash, newHash)
+            .Set(u => u.PasswordHashVersion, hashVersion);
+        await _context.Users.UpdateOneAsync(filter, update);
+    }
 }
