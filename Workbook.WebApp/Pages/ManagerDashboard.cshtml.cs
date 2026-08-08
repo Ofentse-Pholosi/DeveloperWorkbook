@@ -29,6 +29,7 @@ public class ManagerDashboardModel : PageModel
     }
 
     public List<DeveloperProgressInfo> DirectReports { get; set; } = new();
+    public List<Users> PendingApprovals { get; set; } = new();
     public int TotalSectionsCount { get; set; }
     public int CurrentQuarter { get; set; }
     public int CurrentYear { get; set; }
@@ -50,6 +51,18 @@ public class ManagerDashboardModel : PageModel
 
         foreach (var report in reports)
         {
+            if (report.TeamLeadApprovalStatus == "Rejected")
+            {
+                continue;
+            }
+
+            if (report.TeamLeadApprovalStatus == "Pending")
+            {
+                // Not yet confirmed — show identity only, never their submitted data.
+                PendingApprovals.Add(report);
+                continue;
+            }
+
             var answers = await _answerRepository.GetWorkbookAnswersByEmailAsync(report.Email);
             var currentQReview = await _reviewRepository.GetByDeveloperQuarterAsync(report.Email, CurrentQuarter, CurrentYear);
 
@@ -64,6 +77,34 @@ public class ManagerDashboardModel : PageModel
         }
 
         return Page();
+    }
+
+    // ── Approve/Reject a pending team-lead relationship ─────────────────────
+    // Re-verifies TeamLeadEmail server-side against the signed-in manager's own
+    // claim rather than trusting the posted developerEmail alone, so a manager
+    // can't approve/reject an arbitrary developer by tampering with the form.
+    public async Task<IActionResult> OnPostApproveAsync(string developerEmail)
+        => await SetApprovalStatusAsync(developerEmail, "Approved");
+
+    public async Task<IActionResult> OnPostRejectAsync(string developerEmail)
+        => await SetApprovalStatusAsync(developerEmail, "Rejected");
+
+    private async Task<IActionResult> SetApprovalStatusAsync(string developerEmail, string status)
+    {
+        var managerEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+        if (string.IsNullOrEmpty(managerEmail))
+        {
+            return Unauthorized();
+        }
+
+        var developer = await _userRepository.GetUserEmailAsync(developerEmail);
+        if (developer == null || !string.Equals(developer.TeamLeadEmail, managerEmail, StringComparison.OrdinalIgnoreCase))
+        {
+            return NotFound();
+        }
+
+        await _userRepository.UpdateTeamLeadApprovalStatusAsync(developer.Id, status);
+        return RedirectToPage();
     }
 
     public class DeveloperProgressInfo

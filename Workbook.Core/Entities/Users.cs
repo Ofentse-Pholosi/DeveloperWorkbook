@@ -16,6 +16,8 @@ public class Users
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string TeamLeadEmail { get; set; } = string.Empty;
+    /// <summary>"Pending" (default, awaiting the named team lead's confirmation), "Approved", or "Rejected".</summary>
+    public string TeamLeadApprovalStatus { get; set; } = "Pending";
     public string DevPosition { get; set; } = string.Empty;
     public string TeamName { get; set; } = string.Empty;
     public string CompanyName { get; set; } = string.Empty;
