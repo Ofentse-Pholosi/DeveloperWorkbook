@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 using Workbook.Application.Interfaces;
 using Workbook.Core.Entities;
 
@@ -9,6 +10,11 @@ public sealed class AuthService : IAuthService
 {
     private readonly IUserRepository _userRepository;
     private readonly IOtpRepository _otpRepository;
+
+    // PBKDF2-HMAC-SHA256, salted, 100k iterations by default. The `Users` type
+    // parameter is unused by the default implementation — it's only there for
+    // API extensibility, so a throwaway instance is fine when hashing standalone.
+    private static readonly PasswordHasher<Users> _hasher = new();
 
     public AuthService(IUserRepository userRepository, IOtpRepository otpRepository)
     {
@@ -28,6 +34,7 @@ public sealed class AuthService : IAuthService
         {
             Email = devUser.Email,
             PasswordHash = HashPassword(password),
+            PasswordHashVersion = 1,
             TeamLeadEmail = devUser.TeamLeadEmail,
             DevPosition = devUser.DevPosition,
             TeamName = devUser.TeamName,
@@ -40,14 +47,43 @@ public sealed class AuthService : IAuthService
         return true;
     }
 
-    // ── Standard login validation ──────────────────────────────────────────
+    /// <summary>Hashes a new plain-text password using the current (strong) algorithm.</summary>
+    public string HashPassword(string password) => _hasher.HashPassword(new Users(), password);
+
+    // ── Standard login validation ────────────────────────────────────────────
+    // Supports two hash generations so existing users aren't locked out:
+    //   v1 (PasswordHashVersion == 1) → verified with PasswordHasher (PBKDF2).
+    //   v0 (legacy, no version stored) → verified with the old unsalted SHA-256
+    //       check; on success, silently rehashed to v1 and persisted so the
+    //       account is upgraded the moment its owner next logs in.
     public async Task<Users?> ValidateUserAsync(string email, string password)
     {
         var user = await _userRepository.GetUserEmailAsync(email);
-        if (user != null && !VerifyPassword(password, user.PasswordHash))
+        if (user == null)
+            return null;
+
+        if (user.PasswordHashVersion == 1)
         {
-            return null; // Invalid credentials
+            var result = _hasher.VerifyHashedPassword(user, user.PasswordHash, password);
+            if (result == PasswordVerificationResult.Failed)
+                return null;
+
+            if (result == PasswordVerificationResult.SuccessRehashNeeded)
+            {
+                user.PasswordHash = HashPassword(password);
+                await _userRepository.UpdatePasswordHashAsync(user.Id, user.PasswordHash, 1);
+            }
+
+            return user;
         }
+
+        // Legacy (v0) path.
+        if (!VerifyLegacyPassword(password, user.PasswordHash))
+            return null;
+
+        user.PasswordHash = HashPassword(password);
+        user.PasswordHashVersion = 1;
+        await _userRepository.UpdatePasswordHashAsync(user.Id, user.PasswordHash, 1);
         return user;
     }
 
@@ -67,7 +103,7 @@ public sealed class AuthService : IAuthService
         var record = new OtpRecord
         {
             Email = email,
-            CodeHash = HashPassword(code),           // reuse same SHA-256 helper
+            CodeHash = LegacyHash(code),              // short-lived, single-use — SHA-256 is fine here
             ExpiresAt = DateTime.UtcNow.AddMinutes(10),
             IsUsed = false,
             CreatedAt = DateTime.UtcNow
@@ -84,7 +120,7 @@ public sealed class AuthService : IAuthService
         if (record == null)
             return false;
 
-        var inputHash = HashPassword(code);
+        var inputHash = LegacyHash(code);
         if (!string.Equals(record.CodeHash, inputHash, StringComparison.Ordinal))
             return false;
 
@@ -94,7 +130,12 @@ public sealed class AuthService : IAuthService
     }
 
     // ── Private helpers ───────────────────────── ───────────────────────────
-    private static string HashPassword(string input)
+    // Unsalted single-round SHA-256. No longer used for new password hashes
+    // (see HashPassword/_hasher above) — kept only to (a) verify a v0/legacy
+    // user's password on their first post-migration login, so it can be
+    // transparently upgraded, and (b) hash short-lived OTP codes, where this
+    // algorithm's weaknesses don't meaningfully apply.
+    private static string LegacyHash(string input)
     {
         using var sha256 = SHA256.Create();
         var bytes = Encoding.UTF8.GetBytes(input);
@@ -102,8 +143,8 @@ public sealed class AuthService : IAuthService
         return Convert.ToBase64String(hash);
     }
 
-    private static bool VerifyPassword(string password, string hashedPassword)
+    private static bool VerifyLegacyPassword(string password, string hashedPassword)
     {
-        return string.Equals(HashPassword(password), hashedPassword, StringComparison.Ordinal);
+        return string.Equals(LegacyHash(password), hashedPassword, StringComparison.Ordinal);
     }
 }

@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using Workbook.Application.Interfaces;
 using Workbook.Core.Entities;
 
@@ -13,14 +11,17 @@ namespace Workbook.Application.Users.Commands.RegisterUser;
 public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, RegisterUserResult>
 {
     private readonly IUserRepository _userRepository;
+    private readonly IAuthService _authService;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public RegisterUserCommandHandler(
-        IUserRepository userRepository, 
+        IUserRepository userRepository,
+        IAuthService authService,
         IHttpContextAccessor httpContextAccessor
     )
     {
         _userRepository = userRepository;
+        _authService = authService;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -39,8 +40,8 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
         var user = new Core.Entities.Users
         {
             Email = request.Email,
-            PasswordHash = HashPassword(request.Password),
-            PasswordHashConfirm = HashPassword(request.PasswordConfirm),
+            PasswordHash = _authService.HashPassword(request.Password),
+            PasswordHashVersion = 1,
             FirstName = request.FirstName,
             LastName = request.LastName,
             TeamLeadEmail = request.TeamLeadEmail,
@@ -79,13 +80,5 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
             Success = true,
             UserId = user.Id
         };
-    }
-
-    private string HashPassword(string password)
-    {
-        using var sha256 = SHA256.Create();
-        var bytes = Encoding.UTF8.GetBytes(password);
-        var hash = sha256.ComputeHash(bytes);
-        return Convert.ToBase64String(hash);
     }
 }
