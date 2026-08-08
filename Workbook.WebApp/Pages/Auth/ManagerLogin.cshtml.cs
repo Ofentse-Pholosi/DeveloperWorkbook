@@ -97,10 +97,19 @@ public class ManagerLoginModel : PageModel
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);
 
+        // The cookie scheme's default ExpireTimeSpan is TimeSpan.Zero (see Program.cs) —
+        // without an explicit ExpiresUtc here, the ticket is born already expired and
+        // [Authorize] immediately bounces the manager back to the login page. Mirror the
+        // same 10-minute session used for developer sign-in (RegisterUserCommandHandler /
+        // LoginUserCommandHandler) for consistency.
         await HttpContext.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,
             principal,
-            new AuthenticationProperties { IsPersistent = false });
+            new AuthenticationProperties
+            {
+                IsPersistent = false,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10)
+            });
 
         return RedirectToPage("/ManagerDashboard");
     }

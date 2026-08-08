@@ -12,16 +12,19 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
 {
     private readonly IUserRepository _userRepository;
     private readonly IAuthService _authService;
+    private readonly IEmailService _emailService;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public RegisterUserCommandHandler(
         IUserRepository userRepository,
         IAuthService authService,
+        IEmailService emailService,
         IHttpContextAccessor httpContextAccessor
     )
     {
         _userRepository = userRepository;
         _authService = authService;
+        _emailService = emailService;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -53,6 +56,14 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
         };
 
         await _userRepository.CreateAsync(user);
+
+        if (!string.IsNullOrWhiteSpace(user.TeamLeadEmail))
+        {
+            // Best-effort — the team lead relationship stays "Pending" regardless,
+            // so a failed send here shouldn't block registration.
+            await _emailService.SendTeamLeadRequestNotificationAsync(
+                user.TeamLeadEmail, $"{user.FirstName} {user.LastName}".Trim());
+        }
 
         var claims = new List<Claim>
         {

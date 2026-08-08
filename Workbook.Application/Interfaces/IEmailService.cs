@@ -13,4 +13,10 @@ public interface IEmailService
     /// complete the two-step login process.
     /// </summary>
     Task SendOtpEmailAsync(string managerEmail, string otpCode);
+
+    /// <summary>
+    /// Sends an email to a newly-named team lead letting them know a developer
+    /// has listed them and that the relationship is awaiting their confirmation.
+    /// </summary>
+    Task SendTeamLeadRequestNotificationAsync(string managerEmail, string developerName);
 }

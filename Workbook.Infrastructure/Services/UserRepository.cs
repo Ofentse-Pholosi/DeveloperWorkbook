@@ -37,4 +37,11 @@ public class UserRepository : IUserRepository
             .Set(u => u.PasswordHashVersion, hashVersion);
         await _context.Users.UpdateOneAsync(filter, update);
     }
+
+    public async Task UpdateTeamLeadApprovalStatusAsync(string userId, string status)
+    {
+        var filter = Builders<Users>.Filter.Eq(u => u.Id, userId);
+        var update = Builders<Users>.Update.Set(u => u.TeamLeadApprovalStatus, status);
+        await _context.Users.UpdateOneAsync(filter, update);
+    }
 }

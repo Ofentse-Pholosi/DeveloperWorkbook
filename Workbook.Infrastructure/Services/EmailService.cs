@@ -81,6 +81,39 @@ public class EmailService : IEmailService
         await SendAsync(managerEmail, subject, body);
     }
 
+    public async Task SendTeamLeadRequestNotificationAsync(string managerEmail, string developerName)
+    {
+        var subject = $"👋 {developerName} listed you as their team lead on Dev Workbook";
+        var body = $"""
+            <html>
+            <body style="font-family: 'Segoe UI', sans-serif; background: #f8f9fa; padding: 32px;">
+              <div style="max-width: 560px; margin: 0 auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); overflow: hidden;">
+                <div style="background: linear-gradient(135deg, #0d6efd, #6610f2); padding: 28px 32px;">
+                  <h1 style="color: #fff; margin: 0; font-size: 22px;">Dev Onboarding Workbook</h1>
+                </div>
+                <div style="padding: 32px;">
+                  <h2 style="color: #212529; margin-top: 0;">Confirm this relationship</h2>
+                  <p style="color: #495057; line-height: 1.6;">
+                    <strong>{developerName}</strong> has listed you as their team lead. Their submitted
+                    answers stay private until you confirm this — sign in to review and either approve
+                    or reject the request.
+                  </p>
+                  <a href="#" style="display: inline-block; margin-top: 16px; padding: 12px 28px; background: #0d6efd; color: #fff; border-radius: 50px; text-decoration: none; font-weight: 600;">
+                    Sign In to Review →
+                  </a>
+                  <p style="margin-top: 28px; color: #adb5bd; font-size: 13px;">
+                    If you don't recognize {developerName} or don't manage them, you can safely reject
+                    this request once signed in.
+                  </p>
+                </div>
+              </div>
+            </body>
+            </html>
+            """;
+
+        await SendAsync(managerEmail, subject, body);
+    }
+
     // -------------------------------------------------------------------------
     private async Task SendAsync(string toAddress, string subject, string htmlBody)
     {

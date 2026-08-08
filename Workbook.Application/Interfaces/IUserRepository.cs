@@ -7,4 +7,5 @@ public interface IUserRepository
     Task CreateAsync(Core.Entities.Users user);
     Task<List<Core.Entities.Users>> GetUsersByTeamLeadEmailAsync(string teamLeadEmail);
     Task UpdatePasswordHashAsync(string userId, string newHash, int hashVersion);
+    Task UpdateTeamLeadApprovalStatusAsync(string userId, string status);
 }
