@@ -191,7 +191,25 @@ Sees "Reviewed" badge + manager feedback       |
 
 ## Non-Goals (out of scope for this iteration)
 
-- PDF export of completed reviews
 - Historical trend charts across quarters
 - Aggregate team-level reporting
 - Email notifications on review submission (can reuse existing `EmailService` later)
+
+---
+
+## PDF Export
+
+**Implemented (browser print):** `QuarterlyReview`, `ManagerReview`, and `ManagerPerformanceReview`
+each have a "Print / Save PDF" button (`window.print()`) backed by a `@media print` stylesheet in
+`site.css`. It forces accordion sections open, strips nav/footer/action buttons (`.no-print`), and
+renders notes as plain text. Users generate a PDF via their browser's "Save as PDF" print destination.
+No server-side dependency, but output styling depends on the browser's print engine and there's no
+file to store, email, or bulk-export.
+
+**Desired future implementation (server-generated PDF):** replace/augment this with a proper
+server-side export — e.g. via [QuestPDF](https://www.questpdf.com/) — producing a downloadable
+`application/pdf` file from the compiled `PerformanceReview` / `WorkbookAnswer` data directly, so
+reviews can be emailed, archived, or exported in bulk for HR without depending on browser print
+behavior. Roughly: add the QuestPDF dependency, an `IPerformanceReviewPdfService` (and onboarding
+equivalent) that lays out the existing section/rating/feedback structure, and a page handler
+(e.g. `OnGetDownloadPdf`) returning a `FileResult`.

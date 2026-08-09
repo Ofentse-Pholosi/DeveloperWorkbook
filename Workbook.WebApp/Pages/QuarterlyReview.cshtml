@@ -15,6 +15,9 @@
             <p class="hero-body mb-0">Rate each area honestly. This is a structured conversation starter, not a judgement.</p>
         </div>
         <div class="d-flex align-items-center gap-3 pt-1">
+            <button type="button" class="btn-hero-ghost no-print" style="width:auto; padding:0.5rem 1.1rem; font-size:0.8rem;" onclick="window.print()">
+                <i class="fas fa-print me-2"></i> Print / Save PDF
+            </button>
             @if (status == "Reviewed")
             {
                 <span class="dw-badge dw-badge-green"><i class="fas fa-check-circle me-1"></i> Reviewed</span>
@@ -204,7 +207,7 @@
 
         @if (!Model.IsLocked)
         {
-            <div class="d-flex justify-content-end gap-3 mt-4">
+            <div class="d-flex justify-content-end gap-3 mt-4 no-print">
                 <button type="submit" name="action" value="Save" class="btn-hero-ghost" style="width:auto;">
                     <i class="fas fa-save me-2"></i> Save Draft
                 </button>
